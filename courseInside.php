@@ -57,12 +57,6 @@
 
     
 </style>
-<?php
-	require 'core.php';
-
-	$db = new Database();
-	//print_r($db->getStudent(1));
-?>
 <body>
 	<header class="p-3">
 		<div class="container">

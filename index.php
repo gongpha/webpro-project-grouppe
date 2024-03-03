@@ -1,1 +1,5 @@
-<?php require 'template.php' ?>
+<?php
+require 'template_init.php';
+require 'template_header.php';
+require 'template_footer.php';
+?>
