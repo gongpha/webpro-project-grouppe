@@ -1,5 +1,9 @@
 <?php
 require 'template_init.php';
+
+	if ($db->is_logged_in()) {
+		$db->go_to_home();
+	}
 	
 	$form_data = array();
 

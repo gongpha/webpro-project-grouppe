@@ -1,6 +1,10 @@
 <?php
 require 'template_init.php';
 
+	if ($db->is_logged_in()) {
+		$db->go_to_home();
+	}
+
 	// do login
 	if (isset($_POST['signin'])) {
 		if(!empty($_POST['username']) && !empty($_POST['password'])) {
