@@ -60,7 +60,7 @@
 							</a>
 							<div class="dropdown text-end">
 								<a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-									<img src="https://cdn.discordapp.com/channel-icons/1038996352278995044/1bd50e406a531de7c83b94a34132bd6f.webp?size=32" alt="my avatar" width="32" height="32" class="rounded-circle">
+									<img src="<?php echo $db->get_my_avatar() ?>" alt="my avatar" width="32" height="32" class="rounded-circle">
 								</a>
 								<ul class="dropdown-menu text-small" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate3d(0px, 36.6667px, 0px);" data-popper-placement="bottom-start">
 									<li><a class="dropdown-item" href="profile.php">โปรไฟล์ของฉัน</a></li>

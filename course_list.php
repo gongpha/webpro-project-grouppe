@@ -25,8 +25,6 @@ require 'template_header.php';
 				}
 			?>
 		</div>
-		<div class="col-md-3 text-end">
-		</div>
 	</header>
 	
 	<?php
@@ -35,6 +33,7 @@ require 'template_header.php';
 		$num = sizeof($courses);
 		echo "<h3 class=\"result\">ผลลัพธ์จำนวน {$num} คอร์ส</h3>";
 	?>
+	<div class="col-md-3 text-end"></div>
 	<div class="row">
 		<div class="col-sm">
 			<?php

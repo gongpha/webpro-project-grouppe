@@ -10,6 +10,11 @@ if (isset($_GET["id"])) {
 
 $detail = $db->get_anonymous_course_detail($course_id);
 
+if (!$detail) {
+	$db->go_to_home();
+	exit();
+}
+
 require 'template_header.php';
 
 ?>
@@ -30,26 +35,55 @@ require 'template_header.php';
 				<?php echo $detail['desc'] ?>
 			</p>
 			<div class="d-flex align-items-center text-white text-decoration-none">
-				<img src="https://cdn.discordapp.com/channel-icons/1038996352278995044/1bd50e406a531de7c83b94a34132bd6f.webp?size=64" alt="avatar" width="64" height="64" class="rounded-circle me-4">
-				<div class="me-auto">
-					<h4>@@@@@@@@@</h4>
-					<h6>@@@นักพัฒนาเกมจากโลกนอก</h6>
+				<div class="d-flex flex-column gap-2">
+					<?php
+						// instructors
+						foreach ($detail['instructors'] as $i) {
+							?>
+								<div class="d-flex align-items-center">
+									<img src="<?php echo $i["pfplink"]; ?>" alt="avatar" width="64" height="64" class="rounded-circle me-4">
+									<div>
+										<h4><?php echo $i["first_name"] . ' ' . $i["last_name"] ?></h4>
+										<h6><?php echo $i["role"] ?></h6>
+									</div>
+								</div>
+							<?php
+						}
+					?>
 				</div>
-
-				<?php $db->generate_course_button(666, "course_detail.php"); ?>
+				<span class="ms-auto mt-auto">
+					<?php $db->generate_course_button($detail['id'], "course_detail.php?id=" . $detail['id']); ?>
+				</span>
 			</div>
 		</div>
 	</div>
 
 	<div class="d-flex flex-column flex-md-row p-4 gap-4 py-md-5 align-items-center justify-content-center">
 		<div class="list-group w-75">
-			<a href="#" class="list-group-item list-group-item-action">บทที่ 1 : @@@พ่อมึงตาน <i class="bi bi-check-lg"></i></a>
-			<a href="#" class="list-group-item list-group-item-action">บทที่ 2 : @@@พ่อมึงตาน <i class="bi bi-check-lg"></i></a>
-			<a href="#" class="list-group-item list-group-item-action">บทที่ 3 : @@@พ่อมึงตาน <i class="bi bi-check-lg"></i></a>
-			<a href="#" class="list-group-item list-group-item-action">บทที่ 4 : @@@พ่อมึงตาน <i class="bi bi-check-lg"></i></a>
-			<a href="#" class="list-group-item list-group-item-action">บทที่ 5 : @@@พ่อมึงตาน <i class="bi bi-check-lg"></i></a>
-			<a href="#" class="list-group-item list-group-item-action">บทที่ 6 : @@@พ่อมึงตาน</a>
-			<a href="#" class="list-group-item list-group-item-action">บทที่ 7 : @@@พ่อมึงตาน</a>
+			<?php
+				// contents
+				$is_bought = $db->is_course_bought($course_id);
+				foreach ($detail['contents'] as $c) {
+					if ($is_bought) {
+					?>
+						<a href="course_content.php?id=<?php echo $c['id'] ?>" class="list-group-item list-group-item-action">
+							<span class="me-auto d-flex">
+								<span class="w-100"><?php echo $c['title'] ?></span>
+							</span>
+						</a>
+					<?php
+					} else {
+					?>
+						<a class="list-group-item list-group-item-action disabled">
+							<span class="me-auto d-flex">
+								<span class="w-100"><?php echo $c['title'] ?></span>
+								<i class="bi bi-lock-fill mt-auto mb-auto"></i>
+							</span>
+						</a>
+					<?php
+					}
+				}
+			?>
 		</div>
 	</div>
 </div>

@@ -42,6 +42,7 @@ require 'shopping.php';
 			if($row) {
 				if(password_verify($password, $row['password'])) {
 					$_SESSION['user'] = $row;
+					$_SESSION['user']['table'] = "students";
 					return "";
 				}
 			}
@@ -57,6 +58,11 @@ require 'shopping.php';
 			exit();
 		}
 
+		function go_to($page) {
+			header('Location: ' . $page);
+			exit();
+		}
+
 		function go_to_with_motd($page, $motdtype, $motd) {
 			motd($motdtype, $motd);
 			header('Location: ' . $page);
@@ -64,30 +70,19 @@ require 'shopping.php';
 		}
 
 		function generate_course_button($course_id, $current_page_name, $other = "") {
-			$show_remove = false;
+			$show = 0;
 			if ($this->is_logged_in()) {
-				$shopping = new Shopping();
-				$show_remove = $shopping->is_bought($course_id);
-			} else {
-				$show_remove = false;
+				if ($this->is_course_bought($course_id))
+					$show = 2;
+				else {
+					$shopping = new Shopping();
+					if ($shopping->is_in_cart($course_id))
+						$show = 1;
+				}
 			}
 			
-			if ($show_remove) {
-				// not bought yet
-				?>
-				<form action="action.php" method="post">
-					<input type="hidden" name="action" value="shopping_remove_course">
-					<input type="hidden" name="course_id" value="<?php echo $course_id ?>">
-					<input type="hidden" name="redirect_page" value="<?php echo $current_page_name ?>">
-					
-					<button type="submit" class="btn btn-outline-danger ms-auto">
-						<i class="bi bi-cart-dash"></i>
-						เอาออกจากตะกร้า
-					</button>
-					<?php echo $other ?>
-				</form><?php
-			} else {
-				// bought
+			if ($show == 0) {
+				// show buy
 				?>
 				<form action="action.php" method="post">
 					<input type="hidden" name="action" value="shopping_add_course">
@@ -96,7 +91,35 @@ require 'shopping.php';
 					
 					<button type="submit" class="btn btn-success ms-auto">
 						<i class="bi bi-cart-plus"></i>
-						เพิ่มลงในตะกร้า
+						เพิ่มลงในรถเข็น
+					</button>
+					<?php echo $other ?>
+				</form><?php
+			} else if ($show == 1) {
+				// in cart
+				?>
+				<form action="action.php" method="post">
+					<input type="hidden" name="action" value="shopping_remove_course">
+					<input type="hidden" name="course_id" value="<?php echo $course_id ?>">
+					<input type="hidden" name="redirect_page" value="<?php echo $current_page_name ?>">
+					
+					<button type="submit" class="btn btn-outline-danger ms-auto">
+						<i class="bi bi-cart-dash"></i>
+						เอาออกจากรถเข็น
+					</button>
+					<?php echo $other ?>
+				</form><?php
+			} else {
+				// bought
+				?>
+				<form action="action.php" method="post">
+					<input type="hidden" name="action" value="shopping_remove_course">
+					<input type="hidden" name="course_id" value="<?php echo $course_id ?>">
+					<input type="hidden" name="redirect_page" value="<?php echo $current_page_name ?>">
+					
+					<button type="submit" class="btn btn-outline-warning ms-auto" disabled>
+						<i class="bi bi-cart-check-fill"></i>
+						ซื้อแล้ว
 					</button>
 					<?php echo $other ?>
 				</form><?php
@@ -132,12 +155,17 @@ require 'shopping.php';
 			$ret = $this->query($sql);
 			$row = $ret->fetchArray(SQLITE3_ASSOC);
 
+			if (!$row) {
+				return null;
+			}
+
 			// query instructors
-			$sql = "SELECT first_name, last_name, role FROM instructors WHERE id IN (SELECT instructor_id FROM course_instructors WHERE course_id = $id);";
+			$sql = "SELECT username, first_name, last_name, role, profile_pic_hash FROM instructors WHERE id IN (SELECT instructor_id FROM course_instructors WHERE course_id = $id);";
 			$ret = $this->query($sql);
 
 			$instructors = array();
 			while ($row2 = $ret->fetchArray(SQLITE3_ASSOC)) {
+				$row2 = $this->prepare_other_data($row2);
 				array_push($instructors, $row2);
 			}
 
@@ -155,6 +183,88 @@ require 'shopping.php';
 
 			return $row;
 		}
+
+		function get_avatar($table, $id) {
+			$sql = "SELECT id, username, first_name, last_name, profile_pic_hash FROM " . $table . " WHERE id = $id;";
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			$row = $this->prepare_other_data($row);
+			return $row['pfplink'];
+		}
+
+		function get_my_avatar() {
+			if ($this->is_logged_in()) {
+				return $this->get_avatar($_SESSION['user']['table'], $_SESSION['user']['id']);
+			}
+			return '';
+		}
+
+		function prepare_other_data($row) {
+			if (isset($row['profile_pic_hash'])) {
+				if ($row['profile_pic_hash'] != "") {
+					return "/avatars/" . $row['profile_pic_hash'];
+				}
+			}
+
+			$row['pfplink'] = get_pfplink_from_seed('saltPROJECTGROUPPE' . md5($row['username']));
+			return $row;
+		}
+
+		function is_course_bought($course_id) {
+			if ($this->is_logged_in()) {
+				$sql = "SELECT student_id FROM student_owned_courses WHERE course_id = $course_id AND student_id = " . $_SESSION['user']['id'];
+				$ret = $this->query($sql);
+				$row = $ret->fetchArray(SQLITE3_ASSOC);
+				if ($row) {
+					return true;
+				}
+			}
+			return false;
+		
+		}
+
+		function get_course_content($content_id) {
+			$sql = "SELECT * FROM course_contents WHERE id = $content_id;";
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+
+			if (!$row) {
+				return null;
+			}
+
+			// course name, cover
+			$sql = "SELECT name, cover_url FROM courses WHERE id = (SELECT course_id FROM course_contents WHERE id = " . $row['course_id'] . ")";
+			$ret = $this->query($sql);
+			$row2 = $ret->fetchArray(SQLITE3_ASSOC);
+			$row['course_name'] = $row2['name'];
+			$row['cover_url'] = $row2['cover_url'];
+
+			// get attachments
+			$sql = "SELECT * FROM content_attachments_youtube WHERE course_content = $content_id;";
+			$ret = $this->query($sql);
+			$attachments_yt = array();
+			while ($row2 = $ret->fetchArray(SQLITE3_ASSOC)) {
+				array_push($attachments_yt, $row2['url']);
+			}
+			$row['attachments_yt'] = $attachments_yt;
+
+			// get content ids for badges
+			$sql = "SELECT id FROM course_contents WHERE course_id = " . $row['course_id'] . ";";
+			$ret = $this->query($sql);
+			$content_ids = array();
+			while ($row2 = $ret->fetchArray(SQLITE3_ASSOC)) {
+				array_push($content_ids, $row2['id']);
+			}
+
+			$row['content_ids'] = $content_ids;
+
+			return $row;
+			
+		}
+	}
+
+	function get_pfplink_from_seed($ident) {
+		return "https://api.dicebear.com/7.x/thumbs/svg?seed=" . $ident;
 	}
 
 	function motd($type, $txt) {
