@@ -13,63 +13,58 @@ require 'template_header.php';
 			</a>
 		</div>
 		<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-			<input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-			<label class="btn btn-outline-info" for="btnradio1">เขียนโปรแกรม</label>
-
-			<input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-			<label class="btn btn-outline-info" for="btnradio2">ทำเหี้ย 1</label>
-
-			<input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
-			<label class="btn btn-outline-info" for="btnradio3">ทำเหี้ย 2</label>
-
-			<input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
-			<label class="btn btn-outline-info" for="btnradio4">ทำเหี้ย 3</label>
+			<input type="radio" class="btn-check" name="btnradio" id="0" autocomplete="off" checked>
+			<label class="btn btn-outline-info" for="0">คอร์สทั้งหมด</label>
+			<?php
+				$categories = $db->get_anonymous_category_list();
+				foreach ($categories as $c) {
+					?>
+					<input type="radio" class="btn-check" name="btnradio" id="<?php echo $c['id'] ?>" autocomplete="off">
+					<label class="btn btn-outline-info" for="<?php echo $c['id'] ?>"><?php echo $c['name'] ?></label>
+					<?php
+				}
+			?>
 		</div>
 		<div class="col-md-3 text-end">
 		</div>
 	</header>
-	<h3 class="result">ผลลัพธ์จำนวน 3 คอร์ส</h3>
+	
+	<?php
+		$i = 0;
+		$courses = $db->get_anonymous_course_list();
+		$num = sizeof($courses);
+		echo "<h3 class=\"result\">ผลลัพธ์จำนวน {$num} คอร์ส</h3>";
+	?>
+	<div class="row">
+		<div class="col-sm">
+			<?php
 
-	<!-- NEW !!! using cards -->
-	<div class="card mb-3">
-		<img src="https://media.discordapp.net/attachments/746159419091582997/1194887870960377957/FB_IMG_1704953799917.jpg?ex=65f2968c&is=65e0218c&hm=4f9620e8ae1722774bc4cba156079d4f8eaf310463610ebd5b3865502c98e926&=&format=webp&width=473&height=200" class="card-img-top" alt="...">
-		<div class="card-body">
-			<div class="d-flex justify-content-between">
-				<h3 class="card-title">@@@ภาษาซี ทำกูกลายเป็น femboy</h3>
-				<h3><span class="badge text-bg-success">฿ 555</span></h3>
-			</div>
-			
-			<p class="card-text">@@@ไอสัส ชาวไทย</p>
-			<p class="card-text">
-				<span class="badge text-bg-secondary">เขียนโปรแกรม</span>
-			</p>
-			<?php $db->echo_course_button(666); ?>
-			<a href="#" class="btn btn-outline-secondary">ดูรายละเอียด</a>
-		</div>
-	</div>
-
-
-	<div class="p-5 mb-4 bg-body-tertiary rounded-3">
-		<div class="container-fluid py-5">
-			<h1 class="display-5 fw-bold">@@@ภาษาซี ทำกูกลายเป็น femboy</h1>
-			<p class="col-md-8 fs-4">@@@ไอสัส ชาวไทย</p>
-			<button class="btn btn-primary btn-lg" type="button"> &nbsp;&nbsp;ซื้อ&nbsp;&nbsp; </button>
-		</div>
-	</div>
-	<div class="p-5 mb-4 bg-body-tertiary rounded-3">
-		<div class="container-fluid py-5">
-			<h1 class="display-5 fw-bold">@@@ภาษาซี ทำกูกลายเป็น femboy</h1>
-			<p class="col-md-8 fs-4">@@@ไอสัส ชาวไทย</p>
-			<p class="price">฿ 555</p>
-			<button class="btn btn-primary btn-lg" type="button"> &nbsp;&nbsp;ซื้อ&nbsp;&nbsp; </button>
-		</div>
-	</div>
-	<div class="p-5 mb-4 bg-body-tertiary rounded-3">
-		<div class="container-fluid py-5">
-			<h1 class="display-5 fw-bold">@@@ภาษาซี ทำกูกลายเป็น femboy</h1>
-			<p class="col-md-8 fs-4">@@@ไอสัส ชาวไทย</p>
-			<p class="price">฿ 555</p>
-			<button class="btn btn-primary btn-lg" type="button"> &nbsp;&nbsp;ซื้อ&nbsp;&nbsp; </button>
+				foreach ($courses as $c) {
+					if ($i == 2) {
+						$i = 0;
+						echo "</div>";
+						echo "<div class=\"col-sm\">";
+					}
+					?>
+					<div class="card mb-3">
+						<img src="<?php echo $c['cover_url'] ?>" class="card-img-top object-fit-cover" height="400" alt="course cover">
+						<div class="card-body">
+							<div class="d-flex justify-content-between">
+								<h3 class="card-title"><?php echo $c['name'] ?></h3>
+								<h3><span class="badge text-bg-success">฿ <?php echo $c['price'] ?></span></h3>
+							</div>
+							
+							<p class="card-text"><?php echo $c['brief_desc'] ?></p>
+							<p class="card-text">
+								<span class="badge text-bg-secondary"><?php echo $c['category_name'] ?></span>
+							</p>
+							<?php $db->generate_course_button($c['id'], "course_list.php", "<a href=\"course_detail.php?id=" . $c['id'] . "\" class=\"btn btn-outline-secondary\">ดูรายละเอียด</a>"); ?>
+						</div>
+					</div>
+					<?php
+					$i++;
+				}
+			?>
 		</div>
 	</div>
 </div>
