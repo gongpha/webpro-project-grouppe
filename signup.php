@@ -51,17 +51,69 @@ require 'template_init.php';
 require 'template_header.php';
 ?>
 
+<style>
+	.h-100 {
+    height: 67% !important;
+	}
+	.center-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
 <body>
-	<form action="" method="post">
-		<input type="text" name="username" placeholder="Username" value="<?php echo gets('username'); ?>" >
-		<input type="firstname" name="firstname" placeholder="First Name" value="<?php echo gets('firstname'); ?>" >
-		<input type="lastname" name="lastname" placeholder="Last Name" value="<?php echo gets('lastname'); ?>" >
-		<input type="email" name="email" placeholder="Email" value="<?php echo gets('email'); ?>" >
-		<input type="text" name="phone" placeholder="Phone" value="<?php echo gets('phone'); ?>" >
-		<input type="password" name="password" placeholder="Password" value="<?php echo gets('password'); ?>" >
-		<input type="password" name="password2" placeholder="Confirm Password" value="<?php echo gets('password2'); ?>" >
-		<input type="submit" value="Sign-up" name="signup">
+<form action="" method="post">
+  <div class="container h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-lg-12 col-xl-11">
+        <div class="card text-black" style="border-radius: 25px;">
+          <div class="card-body p-md-5">
+            <div class="row justify-content-center">
+              <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+
+                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4" style="color: white;">ลงทะเบียน</p>
+
+                <form class="mx-1 mx-md-4">
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline flex-fill mb-0">
+					  <input type="text" id="form31" class="form-control" name="username" placeholder="ชื่อผู้ใช้" value="<?php echo gets('username'); ?>" >
+					  <label class="form-label" for="form32"> </label>
+					  <input type="firstname" id="form31" class="form-control" name="firstname" placeholder="ชื่อ" value="<?php echo gets('firstname'); ?>">
+					  <label class="form-label" for="form32"> </label>
+					  <input type="lastname" id="form31" class="form-control" name="lastname" placeholder="นามสกุล" value="<?php echo gets('lastname'); ?>" >
+					  <label class="form-label" for="form32"> </label>
+					  <input type="email" id="form31" class="form-control" name="email" placeholder="อีเมล์" value="<?php echo gets('email'); ?>" >
+					  <label class="form-label" for="form32"> </label>
+					  <input type="text"  id="form31" class="form-control" name="phone" placeholder="เบอร์โทรศัพท์" value="<?php echo gets('phone'); ?>" >
+					  <label class="form-label" for="form32"> </label>
+					  <input type="password" id="form31" class="form-control" name="password" placeholder="รหัสผ่าน" value="<?php echo gets('password'); ?>" >
+					  <label class="form-label" for="form32"> </label>
+					  <input type="password" id="form31" class="form-control" name="password2" placeholder="ยืนยันหรัสผ่าน" value="<?php echo gets('password2'); ?>" >
+					  <label class="form-label" for="form32"> </label>
+					  <div class="center-container">
+					  	<input type="submit" class="btn btn-primary" value="ลงทะเบียน" name="signup" style="margin-top:20px;">
+					  </div>
+				</form>
+					  
+                      
+                    </div>
+                  </div>
+				  </div>
+				  </div>
+				  </div>
+				  </div>
+	
+		
+ 
+		
 	</form>
+</div>
+</div>
+</div>
+
+	
 
 <?php
 require 'template_footer.php';
