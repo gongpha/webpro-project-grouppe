@@ -63,8 +63,8 @@ require 'template_header.php';
 </style>
 <body>
 <form action="" method="post">
-  <div class="container h-100">
-    <div class="row d-flex justify-content-center align-items-center h-100">
+  <div class="container">
+    <div class="row d-flex justify-content-center align-items-center">
       <div class="col-lg-12 col-xl-11">
         <div class="card text-black" style="border-radius: 25px;">
           <div class="card-body p-md-5">
@@ -84,13 +84,13 @@ require 'template_header.php';
 					  <label class="form-label" for="form32"> </label>
 					  <input type="lastname" id="form31" class="form-control" name="lastname" placeholder="นามสกุล" value="<?php echo gets('lastname'); ?>" >
 					  <label class="form-label" for="form32"> </label>
-					  <input type="email" id="form31" class="form-control" name="email" placeholder="อีเมล์" value="<?php echo gets('email'); ?>" >
+					  <input type="email" id="form31" class="form-control" name="email" placeholder="อีเมล" value="<?php echo gets('email'); ?>" >
 					  <label class="form-label" for="form32"> </label>
 					  <input type="text"  id="form31" class="form-control" name="phone" placeholder="เบอร์โทรศัพท์" value="<?php echo gets('phone'); ?>" >
 					  <label class="form-label" for="form32"> </label>
 					  <input type="password" id="form31" class="form-control" name="password" placeholder="รหัสผ่าน" value="<?php echo gets('password'); ?>" >
 					  <label class="form-label" for="form32"> </label>
-					  <input type="password" id="form31" class="form-control" name="password2" placeholder="ยืนยันหรัสผ่าน" value="<?php echo gets('password2'); ?>" >
+					  <input type="password" id="form31" class="form-control" name="password2" placeholder="ยืนยันรหัสผ่าน" value="<?php echo gets('password2'); ?>" >
 					  <label class="form-label" for="form32"> </label>
 					  <div class="center-container">
 					  	<input type="submit" class="btn btn-primary" value="ลงทะเบียน" name="signup" style="margin-top:20px;">

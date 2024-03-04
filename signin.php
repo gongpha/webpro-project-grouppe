@@ -51,9 +51,9 @@ require 'template_header.php';
                     <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
 						
-					  <input type="text" id="form31" class="form-control" name="username" placeholder="Username">
+					  <input type="text" id="form31" class="form-control" name="username" placeholder="ชื่อผู้ใช้">
 					  <label class="form-label" for="form32"> </label>
-					  <input type="password" id="form31" class="form-control" name="password" placeholder="Password">
+					  <input type="password" id="form31" class="form-control" name="password" placeholder="รหัสผ่าน">
 					  <label class="form-label" for="form32"> </label>
 					  <div class="center-container">
 					  <div class="auth-section">
