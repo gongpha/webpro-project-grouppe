@@ -8,7 +8,7 @@
 	?>
 	<div class="alert alert-info">
 		<h1>debug shit</h1>
-		<?php print_r($_SESSION); ?>
+		<pre><?php print_r($_SESSION); ?></pre>
 	</div>
 	<?php
 ?>

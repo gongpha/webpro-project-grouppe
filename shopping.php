@@ -19,7 +19,7 @@ class Shopping {
 		return sizeof($_SESSION["shopping_cart_courses"]);
 	}
 
-	function is_bought($id) {
+	function is_in_cart($id) {
 		$this->make_sure();
 		return in_array($id, $_SESSION["shopping_cart_courses"]);
 	}
@@ -27,18 +27,22 @@ class Shopping {
 	function add_course($id, $redirect_page) {
 		global $db;
 
-		if ($this->is_bought($id)) {
+		if ($db->is_course_bought($id)) {
+			$db->go_to_with_motd($redirect_page, "danger", "คอร์สนี้ถูกซื้อไปแล้ว");
+		}
+
+		if ($this->is_in_cart($id)) {
 			// already exist
 		} else {
 			array_push($_SESSION["shopping_cart_courses"], $id);
 		}
 
-		$db->go_to_with_motd($redirect_page, "success", "เพิ่มคอร์สลงในตะกร้าแล้ว สามารถดูได้ที่<a href=\"shopping_cart.php\">รถเข็น</a>");
+		$db->go_to_with_motd($redirect_page, "success", "เพิ่มคอร์สลงในรถเข็นแล้ว สามารถดูได้ที่<a href=\"shopping_cart.php\">รถเข็น</a>");
 	}
 	function remove_course($id, $redirect_page) {
 		global $db;
 
-		if ($this->is_bought($id)) {
+		if ($this->is_in_cart($id)) {
 			if (($key = array_search($id, $_SESSION["shopping_cart_courses"])) !== false) {
 				unset($_SESSION["shopping_cart_courses"][$key]);
 			}
@@ -46,7 +50,7 @@ class Shopping {
 			// not exist
 		}
 
-		$db->go_to_with_motd($redirect_page, "success", "ลบคอร์สออกไปจากตะกร้าแล้ว");
+		$db->go_to_with_motd($redirect_page, "success", "ลบคอร์สออกไปจากรถเข็นแล้ว");
 	}
 
 	function dump_courses() {
@@ -65,6 +69,42 @@ class Shopping {
 			array_push($courses, $row);
 		}
 		return $courses;
+	}
+
+	function get_total_price() {
+		$this->make_sure();
+
+		// query
+		global $db;
+		$ids = $_SESSION["shopping_cart_courses"];
+		$ids = implode(",", $ids);
+		$sql = "SELECT SUM(price) as \"total_price\" FROM courses WHERE id IN ($ids)";
+		$ret = $db->query($sql);
+
+		// dump
+		$row = $ret->fetchArray(SQLITE3_ASSOC);
+		echo $row["total_price"];
+	}
+
+	function commit_payment() {
+		$this->make_sure();
+
+		// pretend to do something
+
+		// add to user's course list
+		global $db;
+		$ids = $_SESSION["shopping_cart_courses"];
+		$sql = "INSERT INTO student_owned_courses (student_id, course_id) VALUES ('{$_SESSION['user']['id']}', ?)";
+		$stmt = $db->prepare($sql);
+		foreach ($ids as $id) {
+			$stmt->bindValue(1, $id, SQLITE3_INTEGER);
+			$stmt->execute();
+		}
+
+		// clear cart
+		$_SESSION["shopping_cart_courses"] = array();
+
+		return true;
 	}
 }
 

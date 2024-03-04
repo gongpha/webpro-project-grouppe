@@ -5,7 +5,7 @@ require 'template_container_begin.php';
 
 $shopping = new Shopping();
 ?>
-<h1>รถเข็นของคุณ</h1>
+<h1 class="mb-4">รถเข็นของคุณ</h1>
 
 <?php
 
@@ -20,7 +20,7 @@ if (sizeof($courses) == 0) {
 		<p class="mb-0">เลือกคอร์สที่คุณต้องการซื้อจากหน้า<a href="course_list.php">รายการคอร์ส</a></p>
 	</div>
 	<?php
-} else
+} else {
 foreach ($courses as $c) {
 	?>
 	<div class="card mb-3">
@@ -43,8 +43,28 @@ foreach ($courses as $c) {
 			</div>
 		</div>
 	</div>
-
 	<?php
+}
+
+?>
+<hr/>
+<table class="table table-borderless">
+	<tr class="fs-3">
+		<td>
+			ราคารวม
+		</td>
+		<td class="text-end">
+			฿ <?php echo $shopping->get_total_price(); ?>
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td class="text-end">
+			<a href="checkout.php" class="btn btn-success">ดำเนินการชำระเงิน</a>
+		</td>
+	</tr>
+</table>
+<?php
 }
 
 require 'template_container_end.php';

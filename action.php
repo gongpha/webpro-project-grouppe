@@ -19,5 +19,12 @@ require 'template_init.php';
 			$shopping = new Shopping();
 			$shopping->remove_course($_POST["course_id"], $_POST["redirect_page"]);
 		} break;
+
+		case "checkout" : {
+			// dummy payment
+			$shopping = new Shopping();
+			if ($shopping->commit_payment())
+				$db->go_to("checkout_success.php");
+		} break;
 	}
 ?>
