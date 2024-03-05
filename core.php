@@ -48,7 +48,9 @@ require 'common.php';
 				}
 			}
 			return "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
-		}
+		} 
+
+		
 
 		function signout() {
 			session_destroy();
@@ -62,6 +64,14 @@ require 'common.php';
 		function go_to($page) {
 			header('Location: ' . $page);
 			exit();
+		}
+
+		function get_student($id) {
+			$sql = "SELECT *, first_name || ' ' || last_name AS name FROM students WHERE id = " . $id;
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			$row = prepare_other_data($row, '../');
+			return $row;
 		}
 
 		function go_to_with_motd($page, $motdtype, $motd) {
