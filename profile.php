@@ -4,6 +4,11 @@
 require 'template_init.php';
 require 'template_header.php';
 require 'template_container_begin.php';
+
+// my profile
+
+$profile = $db->get_my_profile();
+
 ?>
 
 <style>
@@ -31,10 +36,13 @@ require 'template_container_begin.php';
 		<div class="card-img-overlay">
 
 			<div class="d-flex align-items-center text-white text-decoration-none justify-content-between">
-				<img  src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimage.tnews.co.th%2Fnewscenter%2Fimages%2Fuserfiles%2Fimages%2F3-1(479).jpg&f=1&nofb=1&ipt=afa2128701b4e431b0e1ef3b4de7de5e80c6fa38d005486ad096ecc3709aec87&ipo=images" alt="avatar" width="256" height="256" class="rounded-circle me-4">
+				<img src="<?php echo $profile['pfplink'] ?>" alt="avatar" width="256" height="256" class="rounded-circle me-4">
 				<div class="profDetail" width="400">
-					<h4>โจ๊ค ไอศกรีม</h4>
-					<small>สร้างเมื่อ 93 กันยาคม 2024</small>
+					<h4><?php echo $profile['name'] ?></h4>
+					<small>
+						<i class="bi bi-clock"></i>&nbsp;
+						เข้าร่วมเมื่อ <?php echo date( 'd M Y', strtotime($profile['created_date']) ); ?>
+					</small>
 				</div>
                 
 
@@ -67,7 +75,9 @@ require 'template_container_begin.php';
 	<div class="row">
 		<div class="col-sm">
 			<?php
-
+				if (sizeof($courses) == 0) {
+					echo "<p>คุณยังไม่ได้เป็นเจ้าของคอร์สใด ๆ</p>";
+				} else 
 				foreach ($courses as $c) {
 					if ($i == 2) {
 						$i = 0;
@@ -86,7 +96,7 @@ require 'template_container_begin.php';
 							<p class="card-text">
 								<span class="badge text-bg-secondary"><?php echo $c['category_name'] ?></span>
 							</p>
-							<a href="course_detail.php?id="<?php echo $c['id'] ?>" class="btn btn-outline-primary">ดูคอร์ส</a>
+							<a href="course_detail.php?id=<?php echo $c['id']; ?>" class="btn btn-outline-primary">ดูคอร์ส</a>
 						</div>
 					</div>
 					<?php

@@ -273,7 +273,7 @@ require 'common.php';
 
 		function get_owned_course_list() {
 			if ($this->is_logged_in()) {
-				$sql = "SELECT courses.id, courses.name, cover_url, brief_desc, category_id, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id IN (SELECT course_id FROM student_owned_courses WHERE student_id = " . $_SESSION['user']['id'] . ");";
+				$sql = "SELECT courses.id AS id, courses.name, cover_url, brief_desc, category_id, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id IN (SELECT course_id FROM student_owned_courses WHERE student_id = " . $_SESSION['user']['id'] . ");";
 				$ret = $this->query($sql);
 
 				$results = array();
@@ -318,6 +318,43 @@ require 'common.php';
 			$newname = md5_file($tmpname);
 			move_uploaded_file($tmpname, $this->avatardir . $newname . '.jpg');
 			return $newname;
+		}
+
+		function get_my_profile() {
+			// for students and instructors
+			if ($this->is_logged_in()) {
+				$sql = "SELECT id, first_name || ' ' || last_name AS name, profile_pic_hash, created_date FROM " . $_SESSION['user']['table'] . " WHERE id = " . $_SESSION['user']['id'];
+				$ret = $this->query($sql);
+				$row = $ret->fetchArray(SQLITE3_ASSOC);
+				$row = prepare_other_data($row);
+
+				// for students, get owned course list
+				if ($_SESSION['user']['table'] == "students") {
+					$sql = "SELECT courses.id, courses.name, cover_url, brief_desc, category_id, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id IN (SELECT course_id FROM student_owned_courses WHERE student_id = " . $_SESSION['user']['id'] . ");";
+					$ret = $this->query($sql);
+
+					$results = array();
+					while ($row2 = $ret->fetchArray(SQLITE3_ASSOC)) {
+						array_push($results, $row2);
+					}
+					$row['my_courses'] = $results;
+				}
+
+				// for instructors, get created course list
+				if ($_SESSION['user']['table'] == "instructors") {
+					$sql = "SELECT courses.id, courses.name, cover_url, brief_desc, category_id, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id IN (SELECT course_id FROM course_instructors WHERE owner = " . $_SESSION['user']['id'] . ");";
+					$ret = $this->query($sql);
+
+					$results = array();
+					while ($row2 = $ret->fetchArray(SQLITE3_ASSOC)) {
+						array_push($results, $row2);
+					}
+					$row['my_courses'] = $results;
+				}
+
+				return $row;
+			}
+			return array();
 		}
 
 		/////////////////////////////////////

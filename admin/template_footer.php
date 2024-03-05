@@ -1,4 +1,4 @@
-<?php if ($db->is_logged_in()) { ?>
+<?php if ($db->admin_is_logged_in()) { ?>
 </div>
 </div>
 <?php } ?>
