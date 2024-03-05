@@ -36,7 +36,7 @@ foreach ($courses as $c) {
 				</div>
 				<p class="card-text"><?php echo $c['brief_desc'] ?></p>
 				<p class="card-text">
-					<span class="badge text-bg-secondary"><?php echo $c['category_name'] ?></span>
+				<?php $db->generate_category_badge($c['category_id'], $c['category_name']); ?>
 				</p>
 				<?php $db->generate_course_button($c['id'], "shopping_cart.php", "<a href=\"course_detail.php?id=" . $c['id'] . "\" class=\"btn btn-outline-secondary\">ดูรายละเอียด</a>"); ?>
 				</div>

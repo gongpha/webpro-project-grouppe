@@ -1,6 +1,13 @@
 <?php
 require 'template_init.php';
 require 'template_header.php';
+
+$category = '0';
+
+if (isset($_GET['category'])) {
+	$category = $_GET['category'];
+}
+
 ?>
 <div class="container">
 	<!--form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
@@ -12,24 +19,24 @@ require 'template_header.php';
 				<svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
 			</a>
 		</div>
-		<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-			<input type="radio" class="btn-check" name="btnradio" id="0" autocomplete="off" checked>
-			<label class="btn btn-outline-info" for="0">คอร์สทั้งหมด</label>
+		<form method="get" class="btn-group">
+			<input type="submit" class="btn-check" name="category" value="0" id="0" autocomplete="off">
+			<label class="btn <?php echo $category == 0 ? "btn-info" : 'btn-outline-info' ?>" for="0">คอร์สทั้งหมด</label>
 			<?php
-				$categories = $db->get_anonymous_category_list();
+				$categories = $db->get_anonymous_category_list($category);
 				foreach ($categories as $c) {
 					?>
-					<input type="radio" class="btn-check" name="btnradio" id="<?php echo $c['id'] ?>" autocomplete="off">
-					<label class="btn btn-outline-info" for="<?php echo $c['id'] ?>"><?php echo $c['name'] ?></label>
+					<input type="submit" class="btn-check" name="category" value="<?php echo $c['id'] ?>" id="<?php echo $c['id'] ?>" autocomplete="off">
+					<label class="btn <?php echo ($category == $c['id']) ? "btn-info" : 'btn-outline-info' ?>" for="<?php echo $c['id'] ?>"><?php echo $c['name'] ?></label>
 					<?php
 				}
 			?>
-		</div>
+		</form>
 	</header>
 	
 	<?php
 		$i = 0;
-		$courses = $db->get_anonymous_course_list();
+		$courses = $db->get_anonymous_course_list($category);
 		$num = sizeof($courses);
 		echo "<h3 class=\"result\">ผลลัพธ์จำนวน {$num} คอร์ส</h3>";
 	?>
@@ -55,7 +62,7 @@ require 'template_header.php';
 							
 							<p class="card-text"><?php echo $c['brief_desc'] ?></p>
 							<p class="card-text">
-								<span class="badge text-bg-secondary"><?php echo $c['category_name'] ?></span>
+							<?php $db->generate_category_badge($c['category_id'], $c['category_name']); ?>
 							</p>
 							<?php $db->generate_course_button($c['id'], "course_list.php", "<a href=\"course_detail.php?id=" . $c['id'] . "\" class=\"btn btn-outline-secondary\">ดูรายละเอียด</a>"); ?>
 						</div>

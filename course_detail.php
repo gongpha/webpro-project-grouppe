@@ -28,7 +28,7 @@ require 'template_header.php';
 			</div>
 			<p class="card-text"><?php echo $detail['brief_desc'] ?></p>
 			<p class="card-text">
-				<span class="badge text-bg-secondary"><?php echo $detail['category_name'] ?></span>
+				<?php $db->generate_category_badge($detail['category_id'], $detail['category_name']); ?>
 			</p>
 
 			<p class="card-text" style="min-height: 90px;">

@@ -86,6 +86,12 @@ require 'common.php';
 			exit();
 		}
 
+		function generate_category_badge($id, $name) {
+			?>
+			<a href="course_list.php?category=<?php echo $id ?>" class="badge text-bg-secondary" style="text-decoration: none;"><?php echo $name ?></a>
+			<?php
+		}
+
 		function generate_course_button($course_id, $current_page_name, $other = "") {
 			$show = 0;
 			if ($this->is_logged_in()) {
@@ -154,7 +160,12 @@ require 'common.php';
 			return $results;
 		}
 		function get_anonymous_course_list($category = 0) {
-			$sql = "SELECT courses.id, courses.name, cover_url, brief_desc, category_id, price, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id;";
+			
+			$filter = "";
+			if ($category != 0)
+				$filter = " AND category_id = $category";
+
+			$sql = "SELECT courses.id, courses.name, cover_url, brief_desc, category_id, price, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id " . $filter;
 			if ($category != 0)
 				$sql = $sql . " WHERE category_id = '{$category}'";
 			$ret = $this->query($sql);

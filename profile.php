@@ -94,7 +94,7 @@ $profile = $db->get_my_profile();
 							
 							<p class="card-text"><?php echo $c['brief_desc'] ?></p>
 							<p class="card-text">
-								<span class="badge text-bg-secondary"><?php echo $c['category_name'] ?></span>
+							<?php $db->generate_category_badge($c['category_id'], $c['category_name']); ?>
 							</p>
 							<a href="course_detail.php?id=<?php echo $c['id']; ?>" class="btn btn-outline-primary">ดูคอร์ส</a>
 						</div>
