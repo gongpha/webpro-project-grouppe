@@ -2,7 +2,7 @@
 $noredirect = true;
 require 'template_init.php';
 
-	if ($db->is_logged_in()) {
+	if ($db->admin_is_logged_in()) {
 		$db->go_to_home();
 	}
 

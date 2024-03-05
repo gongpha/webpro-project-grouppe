@@ -47,6 +47,7 @@ require 'common.php';
 			$row = $ret->fetchArray(SQLITE3_ASSOC);
 			if($row) {
 				if(password_verify($password, $row['password'])) {
+					$_SESSION = array();
 					$_SESSION['user'] = $row;
 					$_SESSION['user']['table'] = "students";
 					return "";
@@ -329,6 +330,7 @@ require 'common.php';
 			$row = $ret->fetchArray(SQLITE3_ASSOC);
 			if($row) {
 				if(password_verify($password, $row['password'])) {
+					$_SESSION = array();
 					$_SESSION['admin'] = $row;
 					return "";
 				}
