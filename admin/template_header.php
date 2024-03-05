@@ -28,6 +28,7 @@
 					<h2>หน้าผู้ดูแล</h2>
 				</a>
 				<div class="auth-section">
+					<span style="margin-right: 20px">สวัสดี, <?php echo $_SESSION['admin']['username'] ?></span>
 					<a href="signout.php" class="btn btn-secondary">ลงชื่อออก</a>
 				</div>
 			</div>
@@ -50,7 +51,7 @@
 <?php if ($db->is_logged_in()) { ?>
 <div class="container">
 	<div class="d-flex gap-4">
-		<div class="list-group">
+		<div class="list-group" style="min-width: 250px;">
 			<?php
 			foreach ($menu as $key => $value) {
 				$active = ($key . '.php' == basename($_SERVER["PHP_SELF"])) ? "active" : "";

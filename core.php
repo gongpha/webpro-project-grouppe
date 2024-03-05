@@ -1,5 +1,6 @@
 <?php
 require 'shopping.php';
+require 'common.php';
 
 	session_start();
 	class App extends SQLite3 {
@@ -165,7 +166,7 @@ require 'shopping.php';
 
 			$instructors = array();
 			while ($row2 = $ret->fetchArray(SQLITE3_ASSOC)) {
-				$row2 = $this->prepare_other_data($row2);
+				$row2 = prepare_other_data($row2);
 				array_push($instructors, $row2);
 			}
 
@@ -188,7 +189,7 @@ require 'shopping.php';
 			$sql = "SELECT id, username, first_name, last_name, profile_pic_hash FROM " . $table . " WHERE id = $id;";
 			$ret = $this->query($sql);
 			$row = $ret->fetchArray(SQLITE3_ASSOC);
-			$row = $this->prepare_other_data($row);
+			$row = prepare_other_data($row);
 			return $row['pfplink'];
 		}
 
@@ -197,17 +198,6 @@ require 'shopping.php';
 				return $this->get_avatar($_SESSION['user']['table'], $_SESSION['user']['id']);
 			}
 			return '';
-		}
-
-		function prepare_other_data($row) {
-			if (isset($row['profile_pic_hash'])) {
-				if ($row['profile_pic_hash'] != "") {
-					return "/avatars/" . $row['profile_pic_hash'];
-				}
-			}
-
-			$row['pfplink'] = get_pfplink_from_seed('saltPROJECTGROUPPE' . md5($row['username']));
-			return $row;
 		}
 
 		function is_course_bought($course_id) {
@@ -261,10 +251,6 @@ require 'shopping.php';
 			return $row;
 			
 		}
-	}
-
-	function get_pfplink_from_seed($ident) {
-		return "https://api.dicebear.com/7.x/thumbs/svg?seed=" . $ident;
 	}
 
 	function motd($type, $txt) {

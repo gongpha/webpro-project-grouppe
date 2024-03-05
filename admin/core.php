@@ -1,4 +1,6 @@
 <?php
+require '../common.php';
+
 	session_start();
 	class Admin extends SQLite3 {
 		function __construct() {
@@ -32,6 +34,29 @@
 			header('Location: ' . $page);
 			exit();
 		}
+
+		/////////////////////////////////////
+
+		function get_instructor_simple_list() {
+			$sql = "SELECT profile_pic_hash, id, username, first_name || ' ' || last_name AS name FROM instructors";
+			$ret = $this->query($sql);
+			$instructors = array();
+			while($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+				$row = prepare_other_data($row, '../');
+				$instructors[] = $row;
+			}
+
+			return $instructors;
+		
+		}
+
+		function get_instructor($id) {
+			$sql = "SELECT *, first_name || ' ' || last_name AS name FROM instructors WHERE id = " . $id;
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			$row = prepare_other_data($row, '../');
+			return $row;
+		}
 	}
 
 	function motd($type, $txt) {
@@ -41,6 +66,17 @@
 
 	function motd_error($txt) {
 		motd('danger', $txt);
+	}
+
+	function generate_password($length = 20){
+		$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`-=~!@#$%^&*()_+,./<>?;:[]{}\|';
+		$str = '';
+		$max = strlen($chars) - 1;
+
+		for ($i=0; $i < $length; $i++)
+			$str .= $chars[random_int(0, $max)];
+
+		return $str;
 	}
 
 ?>
