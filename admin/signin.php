@@ -12,7 +12,7 @@ require 'template_init.php';
 			$username = $_POST['username'];
 			$password = $_POST['password'];
 
-			$ret = $db->signin($username, $password);
+			$ret = $db->admin_signin($username, $password);
 			if ($ret == "") {
 				header('Location: index.php');
 				exit();

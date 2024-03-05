@@ -57,67 +57,43 @@ require 'template_container_begin.php';
 			</a>
 		</div>
 	</header>
+
+	<?php
+		$i = 0;
+		$courses = $db->get_owned_course_list();
+	?>
 	
 	<h3 class="result">คอร์สของฉัน</h3>	<div class="col-md-3 text-end"></div>
 	<div class="row">
 		<div class="col-sm">
-								<div class="card mb-3">
-						<img src="https://media.discordapp.net/attachments/746159419091582997/1194887870960377957/FB_IMG_1704953799917.jpg?ex=65f2968c&amp;is=65e0218c&amp;hm=4f9620e8ae1722774bc4cba156079d4f8eaf310463610ebd5b3865502c98e926&amp;=&amp;format=webp&amp;width=473&amp;height=140" class="card-img-top object-fit-cover" height="400" alt="course cover">
-						<div class="card-body">
-							<div class="d-flex justify-content-between">
-								<h3 class="card-title">วิชาดาบ</h3>
-							</div>
-							
-							<p class="card-text">เล่นดาบกัน</p>
-							<p class="card-text">
-								<span class="badge text-bg-secondary">วิชาชีวิต</span>
-							</p>
-											<form action="action.php" method="post">
-					<input type="hidden" name="action" value="shopping_add_course">
-					<input type="hidden" name="course_id" value="1">
-					<input type="hidden" name="redirect_page" value="course_list.php">
-					
-					<a href="course_detail.php?id=1" class="btn btn-outline-secondary">ดูรายละเอียด</a>				</form>						</div>
-					</div>
-										<div class="card mb-3">
-						<img src="https://cdn.discordapp.com/attachments/974356275825627156/1212792127617245194/20231029_142726.jpg?ex=65f31faf&amp;is=65e0aaaf&amp;hm=8314ad749faa21191c7e6ca6f6f8cbd62640a9e5a87c90ff21b51190300385a4&amp;" class="card-img-top object-fit-cover" height="400" alt="course cover">
-						<div class="card-body">
-							<div class="d-flex justify-content-between">
-								<h3 class="card-title">สูตรลับ พ่อมึงตาย</h3>
-							</div>
-							
-							<p class="card-text">let him cook</p>
-							<p class="card-text">
-								<span class="badge text-bg-secondary">กูอยากตาย</span>
-							</p>
-											<form action="action.php" method="post">
-					<input type="hidden" name="action" value="shopping_add_course">
-					<input type="hidden" name="course_id" value="2">
-					<input type="hidden" name="redirect_page" value="course_list.php">
-					
+			<?php
 
-					<a href="course_detail.php?id=2" class="btn btn-outline-secondary">ดูรายละเอียด</a>				</form>						</div>
-					</div>
-					</div><div class="col-sm">					<div class="card mb-3">
-						<img src="https://cdn.discordapp.com/attachments/452857558596714509/1197232583533142047/image.png?ex=65f1e3bb&amp;is=65df6ebb&amp;hm=ba4b38b9f727ad8e772d36fd22d35fb8014fa18d9e7a2bf052ac3ff123a248b7&amp;" class="card-img-top object-fit-cover" height="400" alt="course cover">
+				foreach ($courses as $c) {
+					if ($i == 2) {
+						$i = 0;
+						echo "</div>";
+						echo "<div class=\"col-sm\">";
+					}
+					?>
+					<div class="card mb-3">
+						<img src="<?php echo $c['cover_url'] ?>" class="card-img-top object-fit-cover" height="400" alt="course cover">
 						<div class="card-body">
 							<div class="d-flex justify-content-between">
-								<h3 class="card-title">i learn for live</h3>
+								<h3 class="card-title"><?php echo $c['name'] ?></h3>
 							</div>
 							
-							<p class="card-text">do not even mention that</p>
+							<p class="card-text"><?php echo $c['brief_desc'] ?></p>
 							<p class="card-text">
-								<span class="badge text-bg-secondary">เขียนโปรแกรม</span>
+								<span class="badge text-bg-secondary"><?php echo $c['category_name'] ?></span>
 							</p>
-											<form action="action.php" method="post">
-					<input type="hidden" name="action" value="shopping_add_course">
-					<input type="hidden" name="course_id" value="3">
-					<input type="hidden" name="redirect_page" value="course_list.php">
-					
-	
-					<a href="course_detail.php?id=3" class="btn btn-outline-secondary">ดูรายละเอียด</a>				</form>						</div>
+							<a href="course_detail.php?id="<?php echo $c['id'] ?>" class="btn btn-outline-primary">ดูคอร์ส</a>
+						</div>
 					</div>
-							</div>
+					<?php
+					$i++;
+				}
+			?>
+		</div>
 	</div>
 </div>
 </div>

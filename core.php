@@ -4,8 +4,13 @@ require 'common.php';
 
 	session_start();
 	class App extends SQLite3 {
-		function __construct() {
-			$this->open('data.sqlite');
+
+		// avatar dir
+		private $avatardir = "";
+
+		function __construct($dbfile, $avatardir) {
+			$this->open($dbfile);
+			$this->avatardir = __DIR__ . $avatardir;
 		}
 
 		function signUp($username, $email, $phone, $password, $firstname, $lastname) {
@@ -162,6 +167,9 @@ require 'common.php';
 		////////////////////
 
 		function get_anonymous_course_detail($id) {
+			if ($id == null) {
+				return null;
+			}
 			$sql = "SELECT courses.id, courses.name, cover_url, brief_desc, desc, category_id, price, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id = $id;";
 			$ret = $this->query($sql);
 			$row = $ret->fetchArray(SQLITE3_ASSOC);
@@ -261,14 +269,110 @@ require 'common.php';
 			return $row;
 			
 		}
-	}
 
-	function motd($type, $txt) {
-		$_SESSION['motd'] = $txt;
-		$_SESSION['motd_class'] = $type;
-	}
+		function get_owned_course_list() {
+			if ($this->is_logged_in()) {
+				$sql = "SELECT courses.id, courses.name, cover_url, brief_desc, category_id, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id IN (SELECT course_id FROM student_owned_courses WHERE student_id = " . $_SESSION['user']['id'] . ");";
+				$ret = $this->query($sql);
 
-	function motd_error($txt) {
-		motd('danger', $txt);
+				$results = array();
+				while ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+					array_push($results, $row);
+				}
+				return $results;
+			}
+			return array();
+		
+		}
+
+		function change_profile_pic($is_student, $id, $file) {
+			// if has file
+			if ($file['size'] <= 0) {
+				return "";
+			}
+
+			if ($is_student) {
+				$table = "students";
+			} else {
+				$table = "instructors";
+			}
+
+			// get old profile pic hash
+			$sql = "SELECT profile_pic_hash FROM $table WHERE id = " . $id;
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			if ($row) {
+				$old_profile_pic_hash = $row['profile_pic_hash'];
+
+				if ($old_profile_pic_hash != "")
+					unlink($this->avatardir . $old_profile_pic_hash . '.jpg');
+			}
+
+			$filename = $file['name'];
+			$tmpname = $file['tmp_name'];
+			
+			resize_image($tmpname, 128, 128, true);
+
+			$ext = pathinfo($filename, PATHINFO_EXTENSION);
+			$newname = md5_file($tmpname);
+			move_uploaded_file($tmpname, $this->avatardir . $newname . '.jpg');
+			return $newname;
+		}
+
+		/////////////////////////////////////
+		// ADMIN
+
+		function admin_signin($username, $password) {
+			// check by bcrypt
+			$sql = "SELECT * FROM admin_accounts WHERE username = '$username'";
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			if($row) {
+				if(password_verify($password, $row['password'])) {
+					$_SESSION['admin'] = $row;
+					return "";
+				}
+			}
+			return "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+		}
+
+		function admin_is_logged_in() {
+			return isset($_SESSION["admin"]);
+		}
+
+		function get_instructor_simple_list($begin, $search) {
+			return $this->get_simple_list('instructors', $begin, $search);
+		}
+
+		function get_student_simple_list($begin, $search) {
+			return $this->get_simple_list('students', $begin, $search);
+		}
+
+		function get_simple_list($table, $begin, $search) {
+			$filter = "";
+			if ($search != "") {
+				$filter = " WHERE username LIKE '%$search%' OR first_name LIKE '%$search%' OR last_name LIKE '%$search%'";
+			}
+			$sql = "SELECT profile_pic_hash, id, username, first_name || ' ' || last_name AS name FROM $table" . $filter;
+			$ret = $this->query($sql);
+			$instructors = array();
+			while($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+				$row = prepare_other_data($row, '../');
+				$instructors[] = $row;
+			}
+
+			return $instructors;
+		}
+
+		function get_object($id, $table) {
+			$sql = "SELECT *, first_name || ' ' || last_name AS name FROM $table WHERE id = \"" . $id . "\"";
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			$row = prepare_other_data($row, '../');
+			return $row;
+		}
+
+		/////////////////////////////////////
+
 	}
 ?>

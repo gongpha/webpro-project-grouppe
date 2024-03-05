@@ -8,6 +8,10 @@ function prepare_other_data($row, $prefix = "") {
 		}
 	}
 
+	if (!isset($row['username'])) {
+		return $row;
+	}
+
 	$row['pfplink'] = get_pfplink_from_seed('saltPROJECTGROUPPE' . md5($row['username']));
 	return $row;
 }
@@ -43,6 +47,15 @@ function resize_image($file, $w, $h, $crop=FALSE) {
 	imagejpeg($dst, $file);
 
 	return $dst;
+}
+
+function motd($type, $txt) {
+	$_SESSION['motd'] = $txt;
+	$_SESSION['motd_class'] = $type;
+}
+
+function motd_error($txt) {
+	motd('danger', $txt);
 }
 
 ?>

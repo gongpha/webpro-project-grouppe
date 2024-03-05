@@ -2,7 +2,7 @@
 	require 'core.php';
 
 	$OPTIONS = array();
-	$db = new App();
+	$db = new App('data.sqlite', "/avatars/");
 	//print_r($db->getStudent(1));
 
 	?>

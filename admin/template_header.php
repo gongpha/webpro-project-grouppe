@@ -20,7 +20,7 @@
 	<title>project grouppe admin</title>
 </head>
 <body>
-	<?php if ($db->is_logged_in()) { ?>
+	<?php if ($db->admin_is_logged_in()) { ?>
 	<header class="p-3">
 		<div class="container">
 			<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
@@ -48,7 +48,7 @@
 		?>
 	</div>
 
-<?php if ($db->is_logged_in()) { ?>
+<?php if ($db->admin_is_logged_in()) { ?>
 <div class="container">
 	<div class="d-flex gap-4">
 		<div class="list-group" style="min-width: 250px;">
