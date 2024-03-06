@@ -32,7 +32,7 @@ $dashboard_data = $db->get_dashboard_data();
 					<div class="d-flex justify-content-between align-items-center">
 						<div class="me-3">
 							<div class="text-white-75 small">จำนวนผู้สอน</div>
-							<div class="text-lg fw-bold"><?php echo $dashboard_data['instructor_count'] ?></div>
+							<div class="text-lg fw-bold"><?php echo number_format($dashboard_data['instructor_count']); ?></div>
 						</div>
 						<i class="bi bi-person-badge-fill"></i>
 					</div>
@@ -46,7 +46,7 @@ $dashboard_data = $db->get_dashboard_data();
 					<div class="d-flex justify-content-between align-items-center">
 						<div class="me-3">
 							<div class="text-white-75 small">จำนวนคอร์ส</div>
-							<div class="text-lg fw-bold"><?php echo $dashboard_data['course_count'] ?></div>
+							<div class="text-lg fw-bold"><?php echo number_format($dashboard_data['course_count']); ?></div>
 						</div>
 						<i class="bi bi-book"></i>
 					</div>
@@ -60,7 +60,7 @@ $dashboard_data = $db->get_dashboard_data();
 					<div class="d-flex justify-content-between align-items-center">
 						<div class="me-3">
 							<div class="text-white-75 small">รายได้รวม</div>
-							<div class="text-lg fw-bold">999,999</div>
+							<div class="text-lg fw-bold"><?php echo number_format($dashboard_data['cumulative_earning']); ?></div>
 						</div>
 						<i class="bi bi-currency-dollar"></i>
 					</div>

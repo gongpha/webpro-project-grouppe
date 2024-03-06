@@ -534,10 +534,18 @@ require 'common.php';
 				$cumulative_earnings[$row['date']] = $row['sum'];
 			}
 
+			// import cumulative_earning from purchase_log (no limit)
+			$sql = "SELECT SUM(amount) as sum FROM purchase_log;";
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			$cumulative_earning = $row['sum'];
+
 			return array(
 				'student_count' => $student_count,
 				'instructor_count' => $instructor_count,
 				'course_count' => $course_count,
+				'cumulative_earning' => $cumulative_earning,
+
 				'purchase_log' => json_encode($purchase_log),
 				'student_log' => json_encode($student_log),
 				'cumulative_earnings' => json_encode($cumulative_earnings),
