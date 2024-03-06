@@ -71,11 +71,11 @@ if (isset($_SESSION['user']['id'])) {
                         <div class="mb-3 row">
                             <div class="col mb-3">
                                 <label for="username" class="form-label">ID</label>
-                                <input type="text" class="form-control" id="id" name="id" value="<?php echo $profile['id'] ?>" >
+                                <input type="text" class="form-control" id="id" name="id" value="<?php echo $profile['id'] ?>" disabled>
                             </div>
                             <div class="col mb-3">
                                 <label for="username" class="form-label">ชื่อผู้ใช้</label>
-                                <input type="text" class="form-control" id="username" name="username" value="<?php echo $profile['username'] ?>" >
+                                <input type="text" class="form-control" id="username" name="username" value="<?php echo $profile['username'] ?>" disabled>
                             </div>
                         </div>
                         <div class="mb-3">

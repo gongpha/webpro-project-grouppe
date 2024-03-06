@@ -1,11 +1,24 @@
 <?php
 
 	$menu = array(
-		"index" => 'สถิติโดยรวม',
+		"index" => 'แดชบอร์ด',
 		"instructors" => 'ผู้สอน',
 		"students" => 'ผู้เรียน',
-		"courses" => 'คอร์ส',
+		"courses" => 'คอร์ส'
 	);
+
+	function load_chart($chart_id, $data, $use_baht = false) {
+		?>
+
+		<script>
+			applyChart({
+				data: <?php echo $data; ?>,
+				canvasID: "<?php echo $chart_id; ?>"
+			}, <?php echo $use_baht ? "true" : "false"; ?>);
+		</script>
+
+		<?php
+	}
 
 ?>
 <!DOCTYPE html>
@@ -16,10 +29,74 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@0.1.1"></script>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<title>project grouppe admin</title>
+
+	<script>
+	const currMil = (new Date()).valueOf();
+	const dateMil = 86400000;
+
+	function applyChart(list_item, use_baht) {
+		const labels = [];
+		const data = [];
+
+		for (let j = 0; j < Object.keys(list_item.data).length; j++) {
+			labels.push(new Date(currMil - (dateMil * j)));
+			data.push(list_item.data[Object.keys(list_item.data)[j].toString()]);
+		}
+
+		const realdata = {
+			labels: labels,
+			datasets: [
+				{
+					data: data,
+				},
+			],
+		};
+
+		let ctx = document.getElementById(list_item.canvasID).getContext("2d");
+
+		let chart = new Chart(ctx, {
+			type: "line",
+			data: realdata,
+
+			options: {
+				plugins: {
+					legend: {
+						display: false
+					},
+				},
+				scales: {
+					x: {
+						type: "time",
+					},
+					y: {
+						ticks: {
+							stepSize: 1,
+							callback: function(value, index, values) {
+								if (use_baht) {
+									return "฿" + value;
+								} else {
+									return value;
+								}
+							}
+						}
+					}
+				},
+			},
+		});
+	}
+</script>
+
 </head>
 <body>
+	<div class="alert alert-info">
+		<h1>debug admin shit</h1>
+		<pre><?php print_r($_SESSION); ?></pre>
+	</div>
 	<?php if ($db->admin_is_logged_in()) { ?>
 	<header class="p-3">
 		<div class="container">

@@ -96,7 +96,7 @@ require 'common.php';
 			}
 			$ret = $this->query($sql);
 			$row = $ret->fetchArray(SQLITE3_ASSOC);
-			$row = prepare_other_data($row, '../');
+			$row = prepare_other_data($row);
 			return $row;
 		}
 
@@ -489,6 +489,59 @@ require 'common.php';
 			$row = $ret->fetchArray(SQLITE3_ASSOC);
 			$row = prepare_other_data($row, '../');
 			return $row;
+		}
+
+		function get_dashboard_data() {
+			$sql = "SELECT COUNT(*) AS count FROM students";
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			$student_count = $row['count'];
+
+			$sql = "SELECT COUNT(*) AS count FROM instructors";
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			$instructor_count = $row['count'];
+
+			$sql = "SELECT COUNT(*) AS count FROM courses";
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			$course_count = $row['count'];
+
+			//////////////////
+			// graph
+
+			// import data from purchase_log table last 30 days by added_datetime column
+			$sql = "SELECT date(added_datetime) as date, COUNT(*) as count FROM purchase_log WHERE added_datetime >= date('now', '-30 day') GROUP BY date(added_datetime);";
+			$ret = $this->query($sql);
+			$purchase_log = array();
+			while ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+				$purchase_log[$row['date']] = $row['count'];
+			}
+
+			// import data from students table last 30 days by created_datetime column
+			$sql = "SELECT date(created_date) as date, COUNT(*) as count FROM students WHERE created_date >= date('now', '-30 day') GROUP BY date(created_date);";
+			$ret = $this->query($sql);
+			$student_log = array();
+			while ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+				$student_log[$row['date']] = $row['count'];
+			}
+
+			// import cumulative_earnings from purchase_log
+			$sql = "SELECT date(added_datetime) as date, SUM(amount) as sum FROM purchase_log WHERE added_datetime >= date('now', '-30 day') GROUP BY date(added_datetime);";
+			$ret = $this->query($sql);
+			$cumulative_earnings = array();
+			while ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+				$cumulative_earnings[$row['date']] = $row['sum'];
+			}
+
+			return array(
+				'student_count' => $student_count,
+				'instructor_count' => $instructor_count,
+				'course_count' => $course_count,
+				'purchase_log' => json_encode($purchase_log),
+				'student_log' => json_encode($student_log),
+				'cumulative_earnings' => json_encode($cumulative_earnings),
+			);
 		}
 
 		/////////////////////////////////////
