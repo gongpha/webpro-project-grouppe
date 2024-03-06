@@ -56,9 +56,23 @@ require 'common.php';
 				}
 			}
 			return "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
-		} 
+		}
 
-		
+		function signin_instructor($username, $password) {
+			// check by bcrypt
+			$sql = "SELECT * FROM instructors WHERE username = '$username'";
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			if($row) {
+				if(password_verify($password, $row['password'])) {
+					$_SESSION = array();
+					$_SESSION['user'] = $row;
+					$_SESSION['user']['table'] = "instructors";
+					return "";
+				}
+			}
+			return "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+		}
 
 		function signout() {
 			session_destroy();
@@ -101,7 +115,12 @@ require 'common.php';
 		function generate_course_button($course_id, $current_page_name, $other = "") {
 			$show = 0;
 			if ($this->is_logged_in()) {
-				if ($this->is_course_bought($course_id))
+				if (!$this->is_student()) {
+					if ($this->is_owned_course($course_id))
+						$show = 3;
+					else
+						$show = 4;
+				} else if ($this->is_course_bought($course_id))
 					$show = 2;
 				else {
 					$shopping = new Shopping();
@@ -138,7 +157,7 @@ require 'common.php';
 					</button>
 					<?php echo $other ?>
 				</form><?php
-			} else {
+			} else if ($show == 2) {
 				// bought
 				?>
 				<form action="action.php" method="post">
@@ -152,6 +171,20 @@ require 'common.php';
 					</button>
 					<?php echo $other ?>
 				</form><?php
+			} else if ($show == 3) {
+				// edit
+				?>
+				<form action="course_edit.php" method="get">
+					<input type="hidden" name="id" value="<?php echo $course_id ?>">
+					<button type="submit" class="btn btn-warning ms-auto">
+						<i class="bi bi-pencil-fill"></i>
+						แก้ไขคอร์ส
+					</button>
+					<?php echo $other ?>
+				</form><?php
+			} else if ($show == 4) {
+				// show nothing
+				echo $other;
 			}
 		}
 		///////////////////
@@ -303,6 +336,32 @@ require 'common.php';
 		
 		}
 
+		function get_created_course_list() {
+			if ($this->is_logged_in()) {
+				$sql = "SELECT courses.id AS id, courses.name, cover_url, brief_desc, category_id, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE owner = " . $_SESSION['user']['id'] . ";";
+				$ret = $this->query($sql);
+
+				$results = array();
+				while ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+					array_push($results, $row);
+				}
+				return $results;
+			}
+			return array();
+		}
+
+		function is_owned_course($course_id) {
+			if ($this->is_logged_in()) {
+				$sql = "SELECT id FROM courses WHERE id = $course_id AND owner = " . $_SESSION['user']['id'];
+				$ret = $this->query($sql);
+				$row = $ret->fetchArray(SQLITE3_ASSOC);
+				if ($row) {
+					return true;
+				}
+			}
+			return false;
+		}
+
 		function change_profile_pic($is_student, $id, $file) {
 			// if has file
 			if ($file['size'] <= 0) {
@@ -335,6 +394,10 @@ require 'common.php';
 			$newname = md5_file($tmpname);
 			move_uploaded_file($tmpname, $this->avatardir . $newname . '.jpg');
 			return $newname;
+		}
+
+		function is_student() {
+			return $_SESSION['user']['table'] == "students";
 		}
 
 		function get_my_profile() {

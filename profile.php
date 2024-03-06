@@ -2,6 +2,11 @@
 
 <?php
 require 'template_init.php';
+
+if (!$db->is_logged_in()) {
+	$db->go_to_home();
+}
+
 require 'template_header.php';
 require 'template_container_begin.php';
 
@@ -26,12 +31,10 @@ $profile = $db->get_my_profile();
 
 </style>
 
-<body>
 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0" height= "1000">
            
    
 <div class="container">
-	<div class="card text-bg-dark">
 		<div class="card">
 			<div class="card-body">
 				<div class="d-flex align-items-center text-white text-decoration-none">
@@ -68,10 +71,13 @@ $profile = $db->get_my_profile();
 
 	<?php
 		$i = 0;
-		$courses = $db->get_owned_course_list();
+		if ($db->is_student())
+			$courses = $db->get_owned_course_list();
+		else
+			$courses = $db->get_created_course_list();
 	?>
 	
-	<h3 class="result">คอร์สของฉัน</h3>	<div class="col-md-3 text-end"></div>
+	<h3 class="result"><?php echo $db->is_student() ? "คอร์สของฉัน" : "คอร์สที่สร้าง" ?></h3><div class="col-md-3 text-end"></div>
 	<div class="row">
 		<div class="col-sm">
 			<?php
@@ -105,7 +111,6 @@ $profile = $db->get_my_profile();
 			?>
 		</div>
 	</div>
-</div>
 </div>
 
 </ul>

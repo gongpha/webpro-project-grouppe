@@ -45,10 +45,13 @@
 						<?php
 					} else {
 						// profile
-						$shopping = new Shopping();
-						$cart = $shopping->get_count();
+						if ($db->is_student()) {
+							$shopping = new Shopping();
+							$cart = $shopping->get_count();
+						}
 						?>
 						<div class="d-flex gap-5">
+							<?php if ($db->is_student()) { ?>
 							<a href="shopping_cart.php" class="btn position-relative">
 								<i class="bi bi-cart"></i>
 								<?php if ($cart > 0) { ?>
@@ -57,14 +60,16 @@
 									<span class="visually-hidden">courses in the cart</span>
 								<?php } ?>
 								</span>
-							</a>
+							</a><?php } ?>
 							<div class="dropdown text-end">
 								<a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
 									<img src="<?php echo $db->get_my_avatar() ?>" alt="my avatar" width="32" height="32" class="rounded-circle">
 								</a>
 								<ul class="dropdown-menu text-small" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate3d(0px, 36.6667px, 0px);" data-popper-placement="bottom-start">
 									<li><a class="dropdown-item" href="profile.php">โปรไฟล์ของฉัน</a></li>
-									<!--li><a class="dropdown-item" href="settings.php">การตั้งค่า</a></li-->
+									<?php if (!$db->is_student()) { ?>
+									<li><a class="dropdown-item" href="course_edit.php">เพิ่มคอร์สใหม่</a></li>
+									<?php } ?>
 									<li><hr class="dropdown-divider"></li>
 									<li><a class="dropdown-item" href="signout.php">ลงชื่อออก</a></li>
 								</ul>

@@ -11,7 +11,7 @@ require 'template_init.php';
 			$username = $_POST['username'];
 			$password = $_POST['password'];
 
-			$ret = $db->signin($username, $password);
+			$ret = $db->signin_instructor($username, $password);
 			if ($ret == "") {
 				header('Location: index.php');
 				exit();
@@ -28,15 +28,16 @@ require 'template_header.php';
 ?>
 <style>
 	.h-100 {
-	height: 67% !important;
+    height: 67% !important;
 	}
 	.center-container {
 		margin-top: 20px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 </style>
+<body>
 <form action="" method="post">
 	<div class="container">
 		<div class="row d-flex justify-content-center align-items-center">
@@ -45,7 +46,7 @@ require 'template_header.php';
 					<div class="card-body p-md-5">
 						<div class="row justify-content-center">
 							<div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-								<p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4 text-white">เข้าสู่ระบบ</p>
+								<p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4 text-white">เข้าสู่ระบบผู้สอน</p>
 								<div class="d-flex flex-row align-items-center mb-4">
 									<i class="fas fa-user fa-lg me-3 fa-fw"></i>
 									<div class="form-outline flex-fill mb-0">
@@ -60,9 +61,6 @@ require 'template_header.php';
 											<a href="signup.php" class="btn btn-outline-light me-2">ลงทะเบียน</a>
 										</div>
 									</div>
-									<p class="text-center text-white">
-										สำหรับผู้สอน กรุณาเข้าสู่ระบบ<a href="signin_instructor.php">ที่นี่</a>
-									</p>
 								</div>
 							</div>
 						</div>
