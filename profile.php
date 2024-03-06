@@ -32,21 +32,21 @@ $profile = $db->get_my_profile();
    
 <div class="container">
 	<div class="card text-bg-dark">
-		<img style="filter: brightness(25%);" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fobs.line-scdn.net%2F0hStzQr5r9DFtHKCNuO2BzDH1-DzR0RB9YIx5dWBtGUm9iHEgLe04UNWQuAjk5TEsFLk5LP2IhF2ptER8Fck8U%2Fw1200&f=1&nofb=1&ipt=2eaad6cce529a4c3dbb3fcc19c31f035c8a8c977ae8431e98b1a690710cbcd41&ipo=images;height=140" height="320" class="card-img" alt="...">
-		<div class="card-img-overlay">
+		<div class="card">
+			<div class="card-body">
+				<div class="d-flex align-items-center text-white text-decoration-none">
+					<img src="<?php echo $profile['pfplink'] ?>" alt="avatar" width="256" height="256" class="rounded-circle me-4">
+					<div class="profDetail" width="400">
+						<h4><?php echo $profile['name'] ?></h4>
+						<small>
+							<i class="bi bi-clock"></i>&nbsp;
+							เข้าร่วมเมื่อ <?php echo date( 'd M Y', strtotime($profile['created_date']) ); ?>
+						</small>
+					</div>
+					
 
-			<div class="d-flex align-items-center text-white text-decoration-none justify-content-between">
-				<img src="<?php echo $profile['pfplink'] ?>" alt="avatar" width="256" height="256" class="rounded-circle me-4">
-				<div class="profDetail" width="400">
-					<h4><?php echo $profile['name'] ?></h4>
-					<small>
-						<i class="bi bi-clock"></i>&nbsp;
-						เข้าร่วมเมื่อ <?php echo date( 'd M Y', strtotime($profile['created_date']) ); ?>
-					</small>
-				</div>
-                
-
-				<br><br>
+					<br><br>
+        	    </div>
             </div>
             
             

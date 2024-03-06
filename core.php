@@ -27,7 +27,9 @@ require 'common.php';
 				return "อีเมลนี้มีผู้ใช้แล้ว";
 			}
 
-			$sql = "INSERT INTO students (username, email, phone, password, first_name, last_name) VALUES ('$username', '$email', '$phone', '$password', '$firstname', '$lastname')";
+			$password = password_hash($password, PASSWORD_DEFAULT);
+
+			$sql = "INSERT INTO students (username, email, phone, password, first_name, last_name, created_date) VALUES ('$username', '$email', '$phone', '$password', '$firstname', '$lastname', CURRENT_TIMESTAMP)";
 			$ret = $this->exec($sql);
 			if(!$ret){
 				return "ไม่สามารถลงทะเบียนได้ โปรดลองใหม่อีกครั้ง";
@@ -72,8 +74,12 @@ require 'common.php';
 			exit();
 		}
 
-		function get_student($id) {
-			$sql = "SELECT *, first_name || ' ' || last_name AS name FROM students WHERE id = " . $id;
+		function get_profile($id) {
+			if ($_SESSION['user']['table'] == "students") {
+				$sql = "SELECT *, first_name || ' ' || last_name AS name FROM students WHERE id = " . $id;
+			} else if ($_SESSION['user']['table'] == "instructors") {
+				$sql = "SELECT *, first_name || ' ' || last_name AS name FROM instructors WHERE id = " . $id;
+			}
 			$ret = $this->query($sql);
 			$row = $ret->fetchArray(SQLITE3_ASSOC);
 			$row = prepare_other_data($row, '../');
