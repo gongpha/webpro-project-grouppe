@@ -483,6 +483,22 @@ require 'common.php';
 			return $instructors;
 		}
 
+		function get_course_simple_list($begin, $search) {
+			$filter = "";
+			if ($search != "") {
+				$filter = " WHERE name LIKE '%$search%' OR brief_desc LIKE '%$search%' OR desc LIKE '%$search%'";
+			}
+			$sql = "SELECT courses.id, name, created_datetime, first_name || ' ' || last_name AS owner_name FROM courses JOIN instructors ON owner=instructors.id" . $filter;
+			$ret = $this->query($sql);
+			$instructors = array();
+			while($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+				$row = prepare_other_data($row, '../');
+				$instructors[] = $row;
+			}
+
+			return $instructors;
+		}
+
 		function get_object($id, $table) {
 			$sql = "SELECT *, first_name || ' ' || last_name AS name FROM $table WHERE id = \"" . $id . "\"";
 			$ret = $this->query($sql);

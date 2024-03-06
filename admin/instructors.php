@@ -5,6 +5,7 @@ require 'template_header.php';
 
 $header = "รายชื่อผู้สอน";
 $button = "สร้างบัญชีผู้สอนใหม่";
+$show_course = false;
 $editpage = "instructor";
 if (isset($_GET['begin'])) {
 	$begin = $_GET['begin'];
