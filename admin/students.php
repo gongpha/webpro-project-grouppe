@@ -6,6 +6,7 @@ require 'template_header.php';
 $header = "รายชื่อผู้เรียน";
 $button = "";
 $show_course = false;
+$show_cate = false;
 $editpage = "student";
 if (isset($_GET['begin'])) {
 	$begin = $_GET['begin'];

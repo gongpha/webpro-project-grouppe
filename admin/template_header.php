@@ -4,7 +4,8 @@
 		"index" => 'แดชบอร์ด',
 		"instructors" => 'ผู้สอน',
 		"students" => 'ผู้เรียน',
-		"courses" => 'คอร์ส'
+		"courses" => 'คอร์ส',
+		"categories" => 'หมวดหมู่',
 	);
 
 ?>

@@ -751,6 +751,29 @@ require 'common.php';
 			return $instructors;
 		}
 
+		function get_category_simple_list($begin, $search) {
+			$filter = "";
+			if ($search != "") {
+				$filter = " WHERE name LIKE '%$search%'";
+			}
+			$sql = "SELECT id, name FROM course_categories" . $filter;
+			$ret = $this->query($sql);
+			$instructors = array();
+			while($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+				$instructors[] = $row;
+			}
+
+			// add total courses
+			foreach ($instructors as $key => $value) {
+				$sql = "SELECT COUNT(*) as count FROM courses WHERE category_id = " . $value['id'];
+				$ret = $this->query($sql);
+				$row = $ret->fetchArray(SQLITE3_ASSOC);
+				$instructors[$key]['total_courses'] = $row['count'];
+			}
+
+			return $instructors;
+		}
+
 		function get_object($id, $table) {
 			$sql = "SELECT *, first_name || ' ' || last_name AS name FROM $table WHERE id = \"" . $id . "\"";
 			$ret = $this->query($sql);
@@ -818,6 +841,59 @@ require 'common.php';
 				'student_log' => json_encode($student_log),
 				'cumulative_earnings' => json_encode($cumulative_earnings),
 			);
+		}
+
+		function get_category_data($id) {
+			$sql = "SELECT * FROM course_categories WHERE id = " . $id;
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+
+			if (!$row) {
+				return null;
+			}
+
+			// get total courses
+			$sql = "SELECT COUNT(*) as count FROM courses WHERE category_id = " . $id;
+			$ret = $this->query($sql);
+			$row2 = $ret->fetchArray(SQLITE3_ASSOC);
+			$row['total_courses'] = $row2['count'];
+
+			return $row;
+		}
+
+		function add_category($name) {
+			$sql = "INSERT INTO course_categories (name) VALUES ('$name');";
+			$ret = $this->exec($sql);
+			if (!$ret) {
+				return "ไม่สามารถเพิ่มหมวดหมู่ได้";
+			}
+			return "";
+		}
+
+		function edit_category($id, $name) {
+			$sql = "UPDATE course_categories SET name = '$name' WHERE id = $id;";
+			$ret = $this->exec($sql);
+			if (!$ret) {
+				return "ไม่สามารถแก้ไขหมวดหมู่ได้";
+			}
+			return "";
+		}
+
+		function remove_category($id) {
+			// do not remove if has courses
+			$sql = "SELECT COUNT(*) as count FROM courses WHERE category_id = $id;";
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			if ($row['count'] > 0) {
+				return "ไม่สามารถลบหมวดหมู่ที่มีคอร์สอยู่";
+			}
+
+			$sql = "DELETE FROM course_categories WHERE id = $id;";
+			$ret = $this->exec($sql);
+			if (!$ret) {
+				return "ไม่สามารถลบหมวดหมู่ได้";
+			}
+			return "";
 		}
 
 		/////////////////////////////////////

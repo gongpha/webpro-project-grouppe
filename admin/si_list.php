@@ -7,7 +7,7 @@
 		<?php
 			if ($button != "") {
 				?>
-				<a href="instructor.php" style="width: 30%" class="btn btn-success">สร้างบัญชีผู้สอนใหม่</a>
+				<a href="<?php echo $button_page; ?>" style="width: 30%" class="btn btn-success"><?php echo $button; ?></a>
 				<?php
 			}
 		?>
@@ -32,14 +32,19 @@
 			foreach ($list as $i) {
 				echo "<tr>";
 				echo "<td>{$i['id']}</td>";
-				if ($show_course) {
-					echo "<td>{$i['name']}</td>";
-					echo "<td>{$i['owner_name']}</td>";
-					echo "<td>{$i['total_sales']}</td>";
+				if ($show_cate) {
+					echo "<td><a href=\"category.php?id={$i['id']}\">{$i['name']}</a></td>";
+					echo "<td>{$i['total_courses']}</td>";
 				} else {
-					echo "<td><img src=\"{$i['pfplink']}\" alt=\"avatar\" width=\"64\" height=\"64\" class=\"rounded-circle me-4\"> ";
-					echo "<a href=\"" . $editpage . ".php?id={$i['id']}\">{$i['name']}</a>";
-					echo "</td>";
+					if ($show_course) {
+						echo "<td>{$i['name']}</td>";
+						echo "<td>{$i['owner_name']}</td>";
+						echo "<td>{$i['total_sales']}</td>";
+					} else {
+						echo "<td><img src=\"{$i['pfplink']}\" alt=\"avatar\" width=\"64\" height=\"64\" class=\"rounded-circle me-4\"> ";
+						echo "<a href=\"" . $editpage . ".php?id={$i['id']}\">{$i['name']}</a>";
+						echo "</td>";
+					}
 				}
 				echo "</tr>";
 			}
