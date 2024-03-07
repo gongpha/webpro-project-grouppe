@@ -67,7 +67,7 @@
 								<?php } ?>
 								</span>
 							</a><?php } ?>
-							<div class="dropdown text-end">
+							<div class="dropdown text-end mt-auto mb-auto">
 								<a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
 									<img src="<?php echo $db->get_my_avatar() ?>" alt="my avatar" width="32" height="32" class="rounded-circle">
 								</a>

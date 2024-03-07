@@ -50,6 +50,11 @@ $profile = $db->get_my_profile();
 
 					<br><br>
         	    </div>
+				<div class="d-flex align-items-center text-white text-decoration-none">
+					<span class="ms-auto mt-auto">
+						<a href="profile_edit.php" class="btn btn-outline-primary">แก้ไขโปรไฟล์</a>
+					</span>
+				</div>
             </div>
             
             

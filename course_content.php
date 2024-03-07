@@ -59,7 +59,7 @@ $yt_ids = $content['attachments_yt'];
 <?php
 
 foreach ($yt_ids as $yt_id) {
-	echo '<iframe style="width:100%; height:100%;" src="https://www.youtube.com/embed/' . $yt_id . '" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+	echo '<iframe style="width:100%; height:100%; min-height: 640px;" src="https://www.youtube.com/embed/' . $yt_id . '" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
 }
 ?>
 

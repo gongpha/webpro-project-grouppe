@@ -66,7 +66,7 @@ if (isset($_SESSION['user']['id'])) {
                     แก้ไขข้อมูล
                 </div>
                 <div class="card-body">
-                    <form action="profEdit.php" method="post" enctype="multipart/form-data">
+                    <form action="profile_edit.php" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="id" value="<?php echo $profile['id'] ?>">
                         <div class="mb-3 row">
                             <div class="col mb-3">

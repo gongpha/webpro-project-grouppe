@@ -66,6 +66,7 @@ class Shopping {
 		// dump
 		$courses = array();
 		while ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+			$row['cover_url'] = "avatars/" . $row['cover_hash'] . '.jpg';
 			array_push($courses, $row);
 		}
 		return $courses;

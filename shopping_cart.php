@@ -26,7 +26,7 @@ foreach ($courses as $c) {
 	<div class="card mb-3">
 		<div class="row g-0">
 			<div class="col-md-4" style="height : 250px;">
-				<img src="<?php echo $c['cover_url'] ?>" class="img-fluid rounded-start object-fit-cover" alt="course cover" style="width: fit-content; height: 100%;">
+				<img src="<?php echo $c['cover_url'] ?>" class="img-fluid rounded-start object-fit-cover" alt="course cover" style="width: 100%; height: 100%;">
 			</div>
 			<div class="col-md-8">
 				<div class="card-body">
