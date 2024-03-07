@@ -62,8 +62,7 @@ $dashboard_data = $db->get_dashboard_data();
 							<div class="text-white-75 small">รายได้รวม</div>
 							<div class="text-lg fw-bold"><?php echo number_format($dashboard_data['cumulative_earning']); ?></div>
 						</div>
-						<i class="bi bi-currency-dollar"></i>
-					</div>
+						฿</div>
 				</div>
 			</div>
 		</div>

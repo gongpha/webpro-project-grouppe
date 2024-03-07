@@ -44,7 +44,7 @@
 		const data = [];
 
 		for (let j = 0; j < Object.keys(list_item.data).length; j++) {
-			labels.push(new Date(currMil - (dateMil * j)));
+			labels.push(new Date(currMil - (dateMil * (Object.keys(list_item.data).length - j - 1))));
 			data.push(list_item.data[Object.keys(list_item.data)[j].toString()]);
 		}
 

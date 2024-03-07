@@ -282,6 +282,15 @@ require 'common.php';
 		
 		}
 
+		function get_course_info($content_id) {
+			// fetch course info
+			$sql = "SELECT id, name, cover_url, brief_desc, desc, category_id, price, visibility FROM courses WHERE id = $content_id;";
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+
+			return $row;
+		}
+
 		function get_course_content($content_id) {
 			$sql = "SELECT * FROM course_contents WHERE id = $content_id;";
 			$ret = $this->query($sql);
@@ -488,7 +497,7 @@ require 'common.php';
 			if ($search != "") {
 				$filter = " WHERE name LIKE '%$search%' OR brief_desc LIKE '%$search%' OR desc LIKE '%$search%'";
 			}
-			$sql = "SELECT courses.id, name, created_datetime, first_name || ' ' || last_name AS owner_name FROM courses JOIN instructors ON owner=instructors.id" . $filter;
+			$sql = "SELECT courses.id, name, created_datetime, first_name || ' ' || last_name AS owner_name, total_sales FROM courses JOIN instructors ON owner=instructors.id" . $filter;
 			$ret = $this->query($sql);
 			$instructors = array();
 			while($row = $ret->fetchArray(SQLITE3_ASSOC)) {

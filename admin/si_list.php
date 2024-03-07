@@ -18,7 +18,13 @@
 	<thead>
 		<tr>
 			<th scope="col">#</th>
+			<?php if ($show_course) { ?>
+			<th scope="col">ชื่อคอร์ส</th>
+			<th scope="col">ผู้สอน</th>
+			<th scope="col">ยอดขายทั้งหมด</th>
+			<?php } else { ?>
 			<th scope="col"></th>
+			<?php } ?>
 		</tr>
 	</thead>
 	<tbody>
@@ -29,6 +35,7 @@
 				if ($show_course) {
 					echo "<td>{$i['name']}</td>";
 					echo "<td>{$i['owner_name']}</td>";
+					echo "<td>{$i['total_sales']}</td>";
 				} else {
 					echo "<td><img src=\"{$i['pfplink']}\" alt=\"avatar\" width=\"64\" height=\"64\" class=\"rounded-circle me-4\"> ";
 					echo "<a href=\"" . $editpage . ".php?id={$i['id']}\">{$i['name']}</a>";

@@ -83,7 +83,7 @@ class Shopping {
 
 		// dump
 		$row = $ret->fetchArray(SQLITE3_ASSOC);
-		echo $row["total_price"];
+		return $row["total_price"];
 	}
 
 	function commit_payment() {
@@ -91,15 +91,43 @@ class Shopping {
 
 		// pretend to do something
 
-		// add to user's course list
 		global $db;
 		$ids = $_SESSION["shopping_cart_courses"];
+
+		// transaction
+		$db->exec("BEGIN TRANSACTION");
+
+		// add to user's course list
 		$sql = "INSERT INTO student_owned_courses (student_id, course_id) VALUES ('{$_SESSION['user']['id']}', ?)";
 		$stmt = $db->prepare($sql);
 		foreach ($ids as $id) {
 			$stmt->bindValue(1, $id, SQLITE3_INTEGER);
 			$stmt->execute();
 		}
+
+		// update total_sales in courses
+		$sql = "UPDATE courses SET total_sales = total_sales + 1 WHERE id = ?";
+		$stmt = $db->prepare($sql);
+		foreach ($ids as $id) {
+			$stmt->bindValue(1, $id, SQLITE3_INTEGER);
+			$stmt->execute();
+		}
+
+		// add to purchase_log
+		$joined = implode(",", $ids);
+		$total_price = strval($this->get_total_price());
+		$sql = "INSERT INTO purchase_log (from_student_id, type, object_ids, added_datetime, amount) VALUES ('{$_SESSION['user']['id']}', 'BUY_COURSE', '{$joined}', datetime('now'), '{$total_price}')";
+		//echo $sql;
+		$ret = $db->exec($sql);
+		//return false;
+
+		if (!$ret) {
+			$db->exec("ROLLBACK");
+			$db->go_to_with_motd("shopping_cart.php", "danger", "ไม่สามารถทำการซื้อได้ กรุณาลองใหม่อีกครั้ง");
+		}
+
+		// commit
+		$ret = $db->exec("COMMIT");
 
 		// clear cart
 		$_SESSION["shopping_cart_courses"] = array();
