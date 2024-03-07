@@ -60,7 +60,7 @@ class Shopping {
 		global $db;
 		$ids = $_SESSION["shopping_cart_courses"];
 		$ids = implode(",", $ids);
-		$sql = "SELECT courses.id, courses.name, cover_url, brief_desc, desc, category_id, price, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id IN ($ids)";
+		$sql = "SELECT courses.id, courses.name, cover_hash, brief_desc, desc, category_id, price, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id IN ($ids)";
 		$ret = $db->query($sql);
 
 		// dump

@@ -204,13 +204,14 @@ require 'common.php';
 			if ($category != 0)
 				$filter = " AND category_id = $category";
 
-			$sql = "SELECT courses.id, courses.name, cover_url, brief_desc, category_id, price, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id " . $filter;
+			$sql = "SELECT courses.id, courses.name, cover_hash, brief_desc, category_id, price, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id " . $filter . " WHERE visibility = 1;";
 			if ($category != 0)
 				$sql = $sql . " WHERE category_id = '{$category}'";
 			$ret = $this->query($sql);
 
 			$results = array();
 			while ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+				$row['cover_url'] = "avatars/" . $row['cover_hash'] . '.jpg';
 				array_push($results, $row);
 			}
 			return $results;
@@ -221,13 +222,22 @@ require 'common.php';
 			if ($id == null) {
 				return null;
 			}
-			$sql = "SELECT courses.id, courses.name, cover_url, brief_desc, desc, category_id, price, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id = $id;";
+
+			if ($this->is_owned_course($id)) {
+				$more_filter = "";
+			} else {
+				$more_filter = " AND visibility = 1";
+			}
+
+			$sql = "SELECT courses.id, courses.name, cover_hash, brief_desc, desc, category_id, price, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id = $id" . $more_filter;
 			$ret = $this->query($sql);
 			$row = $ret->fetchArray(SQLITE3_ASSOC);
 
 			if (!$row) {
 				return null;
 			}
+
+			$row['cover_url'] = "avatars/" . $row['cover_hash'] . '.jpg';
 
 			// query instructors
 			$sql = "SELECT username, first_name, last_name, role, profile_pic_hash FROM instructors WHERE id IN (SELECT instructor_id FROM course_instructors WHERE course_id = $id);";
@@ -271,7 +281,12 @@ require 'common.php';
 
 		function is_course_bought($course_id) {
 			if ($this->is_logged_in()) {
-				$sql = "SELECT student_id FROM student_owned_courses WHERE course_id = $course_id AND student_id = " . $_SESSION['user']['id'];
+				if ($this->is_student()) {
+					$sql = "SELECT student_id FROM student_owned_courses WHERE course_id = $course_id AND student_id = " . $_SESSION['user']['id'];
+				} else {
+					$sql = "SELECT id FROM courses WHERE id = $course_id AND owner = " . $_SESSION['user']['id'];
+				}
+				
 				$ret = $this->query($sql);
 				$row = $ret->fetchArray(SQLITE3_ASSOC);
 				if ($row) {
@@ -284,9 +299,16 @@ require 'common.php';
 
 		function get_course_info($content_id) {
 			// fetch course info
-			$sql = "SELECT id, name, cover_url, brief_desc, desc, category_id, price, visibility FROM courses WHERE id = $content_id;";
+			$sql = "SELECT id, name, cover_hash, brief_desc, desc, category_id, price, visibility FROM courses WHERE id = $content_id;";
 			$ret = $this->query($sql);
 			$row = $ret->fetchArray(SQLITE3_ASSOC);
+
+			if (!$row) {
+				return null;
+			}
+
+			// cover url
+			$row['cover_url'] = "avatars/" . $row['cover_hash'] . '.jpg';
 
 			return $row;
 		}
@@ -301,11 +323,13 @@ require 'common.php';
 			}
 
 			// course name, cover
-			$sql = "SELECT name, cover_url FROM courses WHERE id = (SELECT course_id FROM course_contents WHERE id = " . $row['course_id'] . ")";
+			$sql = "SELECT name, cover_hash FROM courses WHERE id = (SELECT course_id FROM course_contents WHERE id = " . $row['course_id'] . ")";
 			$ret = $this->query($sql);
 			$row2 = $ret->fetchArray(SQLITE3_ASSOC);
 			$row['course_name'] = $row2['name'];
-			$row['cover_url'] = $row2['cover_url'];
+			$row['cover_hash'] = $row2['cover_hash'];
+
+			$row['cover_url'] = "avatars/" . $row['cover_hash'] . '.jpg';
 
 			// get attachments
 			$sql = "SELECT * FROM content_attachments_youtube WHERE course_content = $content_id;";
@@ -332,11 +356,12 @@ require 'common.php';
 
 		function get_owned_course_list() {
 			if ($this->is_logged_in()) {
-				$sql = "SELECT courses.id AS id, courses.name, cover_url, brief_desc, category_id, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id IN (SELECT course_id FROM student_owned_courses WHERE student_id = " . $_SESSION['user']['id'] . ");";
+				$sql = "SELECT courses.id AS id, courses.name, cover_hash, brief_desc, category_id, course_categories.name as \"category_name\", visibility FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id IN (SELECT course_id FROM student_owned_courses WHERE student_id = " . $_SESSION['user']['id'] . ");";
 				$ret = $this->query($sql);
 
 				$results = array();
 				while ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+					$row['cover_url'] = "avatars/" . $row['cover_hash'] . '.jpg';
 					array_push($results, $row);
 				}
 				return $results;
@@ -347,11 +372,12 @@ require 'common.php';
 
 		function get_created_course_list() {
 			if ($this->is_logged_in()) {
-				$sql = "SELECT courses.id AS id, courses.name, cover_url, brief_desc, category_id, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE owner = " . $_SESSION['user']['id'] . ";";
+				$sql = "SELECT courses.id AS id, courses.name, cover_hash, brief_desc, category_id, course_categories.name as \"category_name\", visibility FROM courses JOIN course_categories ON category_id=course_categories.id WHERE owner = " . $_SESSION['user']['id'] . ";";
 				$ret = $this->query($sql);
 
 				$results = array();
 				while ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+					$row['cover_url'] = "avatars/" . $row['cover_hash'] . '.jpg';
 					array_push($results, $row);
 				}
 				return $results;
@@ -405,6 +431,34 @@ require 'common.php';
 			return $newname;
 		}
 
+		function change_cover($id, $file) {
+			// if has file
+			if ($file['size'] <= 0) {
+				return "";
+			}
+
+			// get old profile pic hash
+			$sql = "SELECT cover_hash FROM courses WHERE id = " . $id;
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			if ($row) {
+				$old_cover_hash = $row['cover_hash'];
+
+				if ($old_cover_hash != "")
+					unlink($this->avatardir . $old_cover_hash . '.jpg');
+			}
+
+			$filename = $file['name'];
+			$tmpname = $file['tmp_name'];
+			
+			resize_image($tmpname, 600, 400, true);
+
+			$ext = pathinfo($filename, PATHINFO_EXTENSION);
+			$newname = md5_file($tmpname);
+			move_uploaded_file($tmpname, $this->avatardir . $newname . '.jpg');
+			return $newname;
+		}
+
 		function is_student() {
 			return $_SESSION['user']['table'] == "students";
 		}
@@ -419,7 +473,7 @@ require 'common.php';
 
 				// for students, get owned course list
 				if ($_SESSION['user']['table'] == "students") {
-					$sql = "SELECT courses.id, courses.name, cover_url, brief_desc, category_id, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id IN (SELECT course_id FROM student_owned_courses WHERE student_id = " . $_SESSION['user']['id'] . ");";
+					$sql = "SELECT courses.id, courses.name, cover_hash, brief_desc, category_id, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id IN (SELECT course_id FROM student_owned_courses WHERE student_id = " . $_SESSION['user']['id'] . ");";
 					$ret = $this->query($sql);
 
 					$results = array();
@@ -431,7 +485,7 @@ require 'common.php';
 
 				// for instructors, get created course list
 				if ($_SESSION['user']['table'] == "instructors") {
-					$sql = "SELECT courses.id, courses.name, cover_url, brief_desc, category_id, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id IN (SELECT course_id FROM course_instructors WHERE owner = " . $_SESSION['user']['id'] . ");";
+					$sql = "SELECT courses.id, courses.name, cover_hash, brief_desc, category_id, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id IN (SELECT course_id FROM course_instructors WHERE owner = " . $_SESSION['user']['id'] . ");";
 					$ret = $this->query($sql);
 
 					$results = array();
@@ -444,6 +498,183 @@ require 'common.php';
 				return $row;
 			}
 			return array();
+		}
+
+		function validate_course_post($post) {
+			// name
+			if (!isset($post['name']) || $post['name'] == "") {
+				return "กรุณากรอกชื่อคอร์ส";
+			}
+
+			// brief_desc
+			if (!isset($post['brief_desc']) || $post['brief_desc'] == "") {
+				return "กรุณากรอกคำอธิบายคอร์ส";
+			}
+
+			// desc
+			if (!isset($post['desc']) || $post['desc'] == "") {
+				return "กรุณากรอกรายละเอียดคอร์ส";
+			}
+
+			// price
+			if (!isset($post['price']) || $post['price'] == "") {
+				return "กรุณากรอกราคาคอร์ส";
+			} else if (!is_numeric($post['price'])) {
+				return "กรุณากรอกราคาคอร์สเป็นตัวเลข";
+			}
+
+			if (isset($post['price']) && $post['price'] < 0) {
+				return "กรุณากรอกราคาคอร์สเป็นค่าบวก";
+			}
+
+			// more than 100
+			if (isset($post['price']) && $post['price'] <= 100) {
+				return "กรุณากรอกราคาคอร์สอย่างน้อย 100 บาท";
+			}
+
+			// category
+			if (!isset($post['category_id']) || $post['category_id'] == "") {
+				return "กรุณาเลือกหมวดหมู่";
+			}
+
+			// check category
+			$sql = "SELECT id FROM course_categories WHERE id = " . $post['category_id'];
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+
+			if (!$row) {
+				return "หมวดหมู่ไม่ถูกต้อง";
+			}
+
+			return '';
+		}
+
+		function new_course($post, $files) {
+			$error = $this->validate_course_post($post);
+			if ($error != "") {
+				return $error;
+			}
+
+			// get data
+			$name = $post['name'];
+			$brief_desc = $post['brief_desc'];
+			$desc = $post['desc'];
+			$price = $post['price'];
+			$category_id = $post['category_id'];
+			//$visibility = $post['visibility'];
+
+			// get cover
+			$cover = $files['coverpicfile'];
+			$cover_hash = $this->change_cover(0, $cover);
+
+			// transaction
+			$this->exec('BEGIN');
+
+			// insert
+			$sql = "INSERT INTO courses (name, brief_desc, desc, price, category_id, cover_hash, visibility, owner, created_datetime, total_sales) VALUES ('$name', '$brief_desc', '$desc', $price, $category_id, '$cover_hash', 0, " . $_SESSION['user']['id'] . ", CURRENT_TIMESTAMP, 0);";
+			$ret = $this->exec($sql);
+			if (!$ret) {
+				$this->exec('ROLLBACK');
+				return "ไม่สามารถสร้างคอร์สได้";
+			}
+
+			// get course id
+			$sql = "SELECT last_insert_rowid() as id;";
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			$course_id = $row['id'];
+
+			// insert course_instructors
+			$sql = "INSERT INTO course_instructors (course_id, instructor_id) VALUES ($course_id, " . $_SESSION['user']['id'] . ");";
+			$ret = $this->exec($sql);
+			if (!$ret) {
+				$this->exec('ROLLBACK');
+				return "ไม่สามารถสร้างคอร์สได้";
+			}
+
+			// commit
+			$this->exec('COMMIT');
+
+			return "";
+		}
+
+		function edit_course($post, $files) {
+			$error = $this->validate_course_post($post);
+			if ($error != "") {
+				return $error;
+			}
+
+			// get data
+			$id = $post['id'];
+			$name = $post['name'];
+			$brief_desc = $post['brief_desc'];
+			$desc = $post['desc'];
+			$price = $post['price'];
+			$category_id = $post['category_id'];
+			$visibility = $post['visibility'];
+
+			if ($files['coverpicfile']['size'] > 0) {
+				// get cover
+				$cover = $files['coverpicfile'];
+				$cover_hash = $this->change_cover($id, $cover);
+				$add_cover = ", cover_hash = '$cover_hash'";
+			} else {
+				$add_cover = "";
+			}
+			// update
+			$sql = "UPDATE courses SET name = '$name', brief_desc = '$brief_desc', desc = '$desc', price = $price, category_id = $category_id" . $add_cover . ", visibility = '$visibility' WHERE id = $id;";
+			//echo $sql;
+			$ret = $this->exec($sql);
+			if (!$ret) {
+				return "ไม่สามารถแก้ไขคอร์สได้";
+			}
+
+			return "";
+		}
+
+		function get_course_statistics_data($id) {
+			// session that called this must own the course
+			// or is admin
+
+			//////////////////
+			// graph
+
+			$where = "
+				added_datetime >= date('now', '-30 day')
+				AND
+				object_ids = '$id' OR
+				object_ids LIKE '$id' || ',%' OR
+				object_ids LIKE '%,' || '$id' OR
+				object_ids LIKE '%,' || '$id' || ',%'
+			";
+
+			// import data from purchase_log table last 30 days by added_datetime column
+			$sql = "SELECT date(added_datetime) as date, COUNT(*) as count FROM purchase_log WHERE ($where);";
+			$ret = $this->query($sql);
+
+			$purchase_log = array();
+			while ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+				if ($row['count'] == 0)
+					continue;
+				$purchase_log[$row['date']] = $row['count'];
+			}
+
+			// import cumulative_earning_specific from purchase_log last 30 days by added_datetime column
+			$cumulative_earning_specific = array();
+			$sql = "SELECT date(added_datetime) as date, SUM(amount) as sum FROM purchase_log WHERE ($where) GROUP BY date(added_datetime);";
+			$ret = $this->query($sql);
+			while ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+				if ($row['sum'] == 0)
+					continue;
+				$cumulative_earning_specific[$row['date']] = $row['sum'];
+			}
+
+
+			return array(
+				'purchase_log' => json_encode($purchase_log),
+				'cumulative_earning_specific' => json_encode($cumulative_earning_specific)
+			);
+
 		}
 
 		/////////////////////////////////////

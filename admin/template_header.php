@@ -7,19 +7,6 @@
 		"courses" => 'คอร์ส'
 	);
 
-	function load_chart($chart_id, $data, $use_baht = false) {
-		?>
-
-		<script>
-			applyChart({
-				data: <?php echo $data; ?>,
-				canvasID: "<?php echo $chart_id; ?>"
-			}, <?php echo $use_baht ? "true" : "false"; ?>);
-		</script>
-
-		<?php
-	}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,61 +22,7 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<title>project grouppe admin</title>
 
-	<script>
-	const currMil = (new Date()).valueOf();
-	const dateMil = 86400000;
-
-	function applyChart(list_item, use_baht) {
-		const labels = [];
-		const data = [];
-
-		for (let j = 0; j < Object.keys(list_item.data).length; j++) {
-			labels.push(new Date(currMil - (dateMil * (Object.keys(list_item.data).length - j - 1))));
-			data.push(list_item.data[Object.keys(list_item.data)[j].toString()]);
-		}
-
-		const realdata = {
-			labels: labels,
-			datasets: [
-				{
-					data: data,
-				},
-			],
-		};
-
-		let ctx = document.getElementById(list_item.canvasID).getContext("2d");
-
-		let chart = new Chart(ctx, {
-			type: "line",
-			data: realdata,
-
-			options: {
-				plugins: {
-					legend: {
-						display: false
-					},
-				},
-				scales: {
-					x: {
-						type: "time",
-					},
-					y: {
-						ticks: {
-							stepSize: 1,
-							callback: function(value, index, values) {
-								if (use_baht) {
-									return "฿" + value;
-								} else {
-									return value;
-								}
-							}
-						}
-					}
-				},
-			},
-		});
-	}
-</script>
+	<script><?php require "../template.js" ?></script>
 
 </head>
 <body>

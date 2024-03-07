@@ -58,4 +58,17 @@ function motd_error($txt) {
 	motd('danger', $txt);
 }
 
+function load_chart($chart_id, $data, $use_baht = false) {
+	?>
+
+	<script>
+		applyChart({
+			data: <?php echo $data; ?>,
+			canvasID: "<?php echo $chart_id; ?>"
+		}, <?php echo $use_baht ? "true" : "false"; ?>);
+	</script>
+
+	<?php
+}
+
 ?>

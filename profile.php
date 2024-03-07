@@ -100,6 +100,9 @@ $profile = $db->get_my_profile();
 							
 							<p class="card-text"><?php echo $c['brief_desc'] ?></p>
 							<p class="card-text">
+							<?php if ($c['visibility'] == 0) { ?>
+								<span class="badge bg-warning text-dark">ซ่อนจากสาธารณะ</span>
+							<?php } ?>
 							<?php $db->generate_category_badge($c['category_id'], $c['category_name']); ?>
 							</p>
 							<a href="course_detail.php?id=<?php echo $c['id']; ?>" class="btn btn-outline-primary">ดูคอร์ส</a>
