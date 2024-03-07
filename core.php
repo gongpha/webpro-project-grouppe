@@ -229,7 +229,7 @@ require 'common.php';
 				$more_filter = " AND visibility = 1";
 			}
 
-			$sql = "SELECT courses.id, courses.name, cover_hash, brief_desc, desc, category_id, price, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id = $id" . $more_filter;
+			$sql = "SELECT courses.id, courses.name, cover_hash, brief_desc, desc, category_id, price, course_categories.name as \"category_name\", visibility FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id = $id" . $more_filter;
 			$ret = $this->query($sql);
 			$row = $ret->fetchArray(SQLITE3_ASSOC);
 
@@ -323,9 +323,21 @@ require 'common.php';
 			}
 
 			// course name, cover
-			$sql = "SELECT name, cover_hash FROM courses WHERE id = (SELECT course_id FROM course_contents WHERE id = " . $row['course_id'] . ")";
+
+			if ($this->is_owned_course($row['course_id'])) {
+				$more_filter = "";
+			} else {
+				$more_filter = " AND visibility = 1";
+			}
+
+			$sql = "SELECT name, cover_hash FROM courses WHERE id = (SELECT course_id FROM course_contents WHERE id = " . $row['course_id'] . $more_filter . ")";
 			$ret = $this->query($sql);
 			$row2 = $ret->fetchArray(SQLITE3_ASSOC);
+
+			if (!$row2) {
+				return null;
+			}
+
 			$row['course_name'] = $row2['name'];
 			$row['cover_hash'] = $row2['cover_hash'];
 

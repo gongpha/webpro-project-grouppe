@@ -28,6 +28,9 @@ require 'template_header.php';
 			</div>
 			<p class="card-text"><?php echo $detail['brief_desc'] ?></p>
 			<p class="card-text">
+				<?php if ($detail['visibility'] == 0) { ?>
+					<span class="badge bg-warning text-dark">ซ่อนจากสาธารณะ</span>
+				<?php } ?>
 				<?php $db->generate_category_badge($detail['category_id'], $detail['category_name']); ?>
 			</p>
 
