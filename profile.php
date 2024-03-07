@@ -78,20 +78,20 @@ $profile = $db->get_my_profile();
 	?>
 	
 	<h3 class="result"><?php echo $db->is_student() ? "คอร์สของฉัน" : "คอร์สที่สร้าง" ?></h3><div class="col-md-3 text-end"></div>
-	<div class="row">
-		<div class="col-sm">
-			<?php
-				if (sizeof($courses) == 0) {
-					echo "<p>คุณยังไม่ได้เป็นเจ้าของคอร์สใด ๆ</p>";
-				} else 
-				foreach ($courses as $c) {
-					if ($i == 2) {
-						$i = 0;
-						echo "</div>";
-						echo "<div class=\"col-sm\">";
-					}
-					?>
-					<div class="card mb-3">
+	<div class="row mb-3">
+		<?php
+			if (sizeof($courses) == 0) {
+				echo "<p>คุณยังไม่ได้เป็นเจ้าของคอร์สใด ๆ</p>";
+			} else 
+			foreach ($courses as $c) {
+				if ($i == 2) {
+					$i = 0;
+					echo "</div>";
+					echo "<div class=\"row mb-3\">";
+				}
+				?>
+				<div class="col-md-6">
+					<div class="card">
 						<img src="<?php echo $c['cover_url'] ?>" class="card-img-top object-fit-cover" height="400" alt="course cover">
 						<div class="card-body">
 							<div class="d-flex justify-content-between">
@@ -108,11 +108,11 @@ $profile = $db->get_my_profile();
 							<a href="course_detail.php?id=<?php echo $c['id']; ?>" class="btn btn-outline-primary">ดูคอร์ส</a>
 						</div>
 					</div>
-					<?php
-					$i++;
-				}
-			?>
-		</div>
+				</div>
+				<?php
+				$i++;
+			}
+		?>
 	</div>
 </div>
 

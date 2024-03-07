@@ -40,19 +40,17 @@ if (isset($_GET['category'])) {
 		$num = sizeof($courses);
 		echo "<h3 class=\"result\">ผลลัพธ์จำนวน {$num} คอร์ส</h3>";
 	?>
-	<div class="col-md-3 text-end"></div>
-	<div class="row">
-		<div class="col-sm">
-			<?php
-
-				foreach ($courses as $c) {
-					if ($i == 2) {
-						$i = 0;
-						echo "</div>";
-						echo "<div class=\"col-sm\">";
-					}
-					?>
-					<div class="card mb-3">
+	<div class="row mb-3">
+		<?php
+			foreach ($courses as $c) {
+				if ($i == 2) {
+					$i = 0;
+					echo "</div>";
+					echo "<div class=\"row mb-3\">";
+				}
+				?>
+				<div class="col-md-6">
+					<div class="card">
 						<img src="<?php echo $c['cover_url'] ?>" class="card-img-top object-fit-cover" height="400" alt="course cover">
 						<div class="card-body">
 							<div class="d-flex justify-content-between">
@@ -67,11 +65,11 @@ if (isset($_GET['category'])) {
 							<?php $db->generate_course_button($c['id'], "course_list.php", "<a href=\"course_detail.php?id=" . $c['id'] . "\" class=\"btn btn-outline-secondary\">ดูรายละเอียด</a>"); ?>
 						</div>
 					</div>
-					<?php
-					$i++;
-				}
-			?>
-		</div>
+				</div>
+				<?php
+				$i++;
+			}
+		?>
 	</div>
 </div>
 <?php

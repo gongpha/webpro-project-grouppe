@@ -174,7 +174,7 @@ require 'common.php';
 			} else if ($show == 3) {
 				// edit
 				?>
-				<form action="course_edit.php" method="get">
+				<form action="course_edit.php" method="get" class="mb-0">
 					<input type="hidden" name="id" value="<?php echo $course_id ?>">
 					<button type="submit" class="btn btn-warning ms-auto">
 						<i class="bi bi-pencil-fill"></i>
