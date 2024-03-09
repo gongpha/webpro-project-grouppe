@@ -19,6 +19,14 @@ require 'common.php';
 				return "เบอร์โทรศัพท์ไม่ถูกต้อง";
 			}
 
+			// check username
+			$sql = "SELECT * FROM students WHERE username = '$username'";
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			if($row) {
+				return "ชื่อผู้ใช้นี้มีผู้ใช้แล้ว";
+			}
+
 			// check email
 			$sql = "SELECT * FROM students WHERE email = '$email'";
 			$ret = $this->query($sql);
@@ -506,7 +514,11 @@ require 'common.php';
 		function get_my_profile() {
 			// for students and instructors
 			if ($this->is_logged_in()) {
-				$sql = "SELECT id, first_name || ' ' || last_name AS name, profile_pic_hash, created_date FROM " . $_SESSION['user']['table'] . " WHERE id = " . $_SESSION['user']['id'];
+				if (!$this->is_student())
+					$role = ", role";
+				else
+					$role = "";
+				$sql = "SELECT id, first_name || ' ' || last_name AS name, profile_pic_hash " . $role . ", created_date FROM " . $_SESSION['user']['table'] . " WHERE id = " . $_SESSION['user']['id'];
 				$ret = $this->query($sql);
 				$row = $ret->fetchArray(SQLITE3_ASSOC);
 				$row = prepare_other_data($row);

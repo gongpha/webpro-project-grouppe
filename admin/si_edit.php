@@ -67,6 +67,22 @@ if ($object != null) {
 						<input type="text" class="form-control" id="username" name="username" value="<?php echo $object['username'] ?>" <?php echo $lock ?> >
 					</div>
 				</div>
+				<!-- for instructor only -->
+				<?php
+				if ($table == "instructors") {
+					?>
+					<div class="mb-3">
+						<label for="role" class="form-label
+						<?php echo $required ?>">ตำแหน่งปัจจุบัน (เช่น อดีตนักพัฒนาซอฟต์แวร์ที่ Google)</label>
+						<div class="mb-3 row">
+							<div class="col">
+								<input class="form-control" name="role" value="<?php echo $object['role'] ?>">
+							</div>
+						</div>
+					</div>
+					<?php
+				}
+				?>
 				<div class="mb-3">
 					<label for="password" class="form-label <?php echo $required ?>">รหัสผ่าน<?php echo $object['id'] == 0 ? "" : "ใหม่"; ?></label>
 					<div class="mb-3 row">

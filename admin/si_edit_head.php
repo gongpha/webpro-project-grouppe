@@ -7,7 +7,7 @@ print_r($_POST);
 echo "</pre>";*/
 
 if (isset($_POST['id'])) {
-	// update/new instructor
+	// update/new s/i
 
 	$make_new = isset($_POST['new']);
 
@@ -53,14 +53,17 @@ if (isset($_POST['id'])) {
 			}
 
 			$pfpname = $db->change_profile_pic(false, 0, $_FILES['pfpfile']);
-			if ($pfpname != "") {
-				$change_profile_pic = ", profile_pic_hash = '$pfpname'";
+
+			if (isset($_POST['role'])) {
+				$change_role_name = ", role";
+				$change_role = ", " . $_POST['role'];
 			} else {
-				$change_profile_pic = "";
+				$change_role_name = "";
+				$change_role = "";
 			}
 
 			if (!$failed) {
-				$sql = "INSERT INTO $table (username, email, phone, password, first_name, last_name, profile_pic_hash) VALUES ('$username', '$email', '$phone', '" . password_hash($_POST['password'], PASSWORD_DEFAULT) . "', '$first_name', '$last_name', '$pfpname')";
+				$sql = "INSERT INTO $table (username, email, phone, password, first_name, last_name, profile_pic_hash" . $change_role_name . ") VALUES ('$username', '$email', '$phone', '" . password_hash($_POST['password'], PASSWORD_DEFAULT) . "', '$first_name', '$last_name', '$pfpname', " . $_POST['role'] . ")";
 				$ret = $db->exec($sql);
 				if(!$ret){
 					motd('danger', 'ไม่สามารถลงทะเบียนได้ โปรดลองใหม่อีกครั้ง');
@@ -86,7 +89,13 @@ if (isset($_POST['id'])) {
 			$change_profile_pic = "";
 		}
 
-		$sql = "UPDATE $table SET first_name = '$first_name', last_name = '$last_name', email = '$email' " . $change_password . ", phone = '$phone' " . $change_profile_pic . " WHERE id = " . $_POST['id'];
+		if (isset($_POST['role'])) {
+			$change_role = ", role = '" . $_POST['role'] . "'";
+		} else {
+			$change_role = "";
+		}
+
+		$sql = "UPDATE $table SET first_name = '$first_name', last_name = '$last_name', email = '$email' " . $change_password . $change_role . ", phone = '$phone' " . $change_profile_pic . " WHERE id = " . $_POST['id'];
 		$db->exec($sql);
 		motd('success', 'บันทึกข้อมูลเรียบร้อย');
 		$db->go_to("$table.php");

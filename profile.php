@@ -51,6 +51,9 @@ $begin = ($page - 1) * $item_per_page;
 					<img src="<?php echo $profile['pfplink'] ?>" alt="avatar" width="256" height="256" class="rounded-circle me-4">
 					<div class="profDetail" width="400">
 						<h4><?php echo $profile['name'] ?></h4>
+						<?php if (!$db->is_student()) { ?>
+							<h6><?php echo $profile['role'] ?></h6>
+						<?php } ?>
 						<small>
 							<i class="bi bi-clock"></i>&nbsp;
 							เข้าร่วมเมื่อ <?php echo date( 'd M Y', strtotime($profile['created_date']) ); ?>
