@@ -1,11 +1,11 @@
 <?php
 
 	$menu = array(
-		"index" => 'แดชบอร์ด',
-		"instructors" => 'ผู้สอน',
-		"students" => 'ผู้เรียน',
-		"courses" => 'คอร์ส',
-		"categories" => 'หมวดหมู่',
+		"index" => '<i class="bi bi-graph-up"></i> แดชบอร์ด',
+		"instructors" => '<i class="bi bi-file-person-fill"></i> ผู้สอน',
+		"students" => '<i class="bi bi-person-fill"></i> ผู้เรียน',
+		"courses" => '<i class="bi bi-book"></i> คอร์ส',
+		"categories" => '<i class="bi bi-tag-fill"></i> หมวดหมู่',
 	);
 
 ?>

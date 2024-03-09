@@ -877,7 +877,7 @@ require 'common.php';
 			if ($search != "") {
 				$filter = " WHERE name LIKE '%$search%' OR brief_desc LIKE '%$search%' OR desc LIKE '%$search%'";
 			}
-			$sql = "SELECT courses.id, name, created_datetime, first_name || ' ' || last_name AS owner_name, total_sales FROM courses JOIN instructors ON owner=instructors.id" . $filter;
+			$sql = "SELECT courses.id, courses.name, created_datetime, first_name || ' ' || last_name AS owner_name, total_sales, course_categories.name AS category_name FROM courses JOIN instructors ON owner=instructors.id JOIN course_categories ON category_id=course_categories.id" . $filter;
 			$ret = $this->query($sql);
 			$instructors = array();
 			while($row = $ret->fetchArray(SQLITE3_ASSOC)) {
