@@ -8,7 +8,7 @@ $dashboard_data = $db->get_dashboard_data();
 
 <div class="container">
 	<div class="col-12">
-		<h1>แดชบอร์ด</h1>
+		<h1>แผงควบคุม</h1>
 		<p>ยินดีต้อนรับเข้าสู่หน้าผู้ดูแลระบบ</p>
 	</div>
 	<div class="row">

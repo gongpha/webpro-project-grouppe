@@ -24,7 +24,7 @@ require 'template_header.php';
 		<div class="card-body" style="background-image: linear-gradient(#00000078, black), url(<?php echo $detail['cover_url'] ?>); background-size: cover;">
 			<div class="d-flex justify-content-between">
 				<h3 class="card-title"><?php echo $detail['name'] ?></h3>
-				<h3><span class="badge text-bg-success">฿ <?php echo $detail['price'] ?></span></h3>
+				<h3><span class="badge text-bg-success">฿ <?php echo number_format($detail['price']) ?></span></h3>
 			</div>
 			<p class="card-text"><?php echo $detail['brief_desc'] ?></p>
 			<p class="card-text">

@@ -13,21 +13,29 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<title>project grouppe</title>
 
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai+Looped:wght@100;200;300;400;500;600;700&family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+	<style>
+		html {
+			--bs-body-font-family: "IBM Plex Sans Thai Looped", sans-serif !important;
+		}
+	</style>
+
 	<script><?php require "template.js" ?></script>
 </head>
 <body>
 	<header class="p-3">
 		<div class="container">
 			<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-				<a href="index.php" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-backpack2-fill" viewBox="0 0 16 16">
-						<path d="M5 13h6v-3h-1v.5a.5.5 0 0 1-1 0V10H5z"/>
-						<path d="M6 2v.341C3.67 3.165 2 5.388 2 8v1.191l-1.17.585A1.5 1.5 0 0 0 0 11.118V13.5A1.5 1.5 0 0 0 1.5 15h1c.456.607 1.182 1 2 1h7c.818 0 1.544-.393 2-1h1a1.5 1.5 0 0 0 1.5-1.5v-2.382a1.5 1.5 0 0 0-.83-1.342L14 9.191V8a6 6 0 0 0-4-5.659V2a2 2 0 1 0-4 0m2-1a1 1 0 0 1 1 1v.083a6 6 0 0 0-2 0V2a1 1 0 0 1 1-1m0 3a4 4 0 0 1 3.96 3.43.5.5 0 1 1-.99.14 3 3 0 0 0-5.94 0 .5.5 0 1 1-.99-.14A4 4 0 0 1 8 4M4.5 9h7a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5"/>
-					</svg>
+				<a href="index.php" style="" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+					<img src="assets/logo.png" alt="logo" width="40" height="40">
+					<h3 class="mt-auto mb-auto ms-2 me-5">OnFuckingDemand</h3>
 				</a>
 				<ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
 					<li class="nav-item">
-						<a href="course_list.php" class="nav-link text-white">คอร์ส</a>
+						<a href="course_list.php" class="nav-link text-white">คอร์สเรียน</a>
 					</li>
 				</ul>
 

@@ -31,13 +31,13 @@ $begin = ($page - 1) * $item_per_page;
 		</div>
 		<form method="get" class="btn-group">
 			<input type="submit" class="btn-check" name="category" value="0" id="0" autocomplete="off">
-			<label class="btn <?php echo $category == 0 ? "btn-info" : 'btn-outline-info' ?>" for="0">คอร์สทั้งหมด</label>
+			<label class="btn <?php echo $category == 0 ? "btn-primary" : 'btn-outline-primary' ?>" for="0">คอร์สทั้งหมด</label>
 			<?php
 				$categories = $db->get_anonymous_category_list($category);
 				foreach ($categories as $c) {
 					?>
 					<input type="submit" class="btn-check" name="category" value="<?php echo $c['id'] ?>" id="<?php echo $c['id'] ?>" autocomplete="off">
-					<label class="btn <?php echo ($category == $c['id']) ? "btn-info" : 'btn-outline-info' ?>" for="<?php echo $c['id'] ?>"><?php echo $c['name'] ?></label>
+					<label class="btn <?php echo ($category == $c['id']) ? "btn-primary" : 'btn-outline-primary' ?>" for="<?php echo $c['id'] ?>"><?php echo $c['name'] ?></label>
 					<?php
 				}
 			?>
@@ -67,7 +67,7 @@ $begin = ($page - 1) * $item_per_page;
 						<div class="card-body">
 							<div class="d-flex justify-content-between">
 								<h3 class="card-title"><?php echo $c['name'] ?></h3>
-								<h3><span class="badge text-bg-success">฿ <?php echo $c['price'] ?></span></h3>
+								<h3><span class="badge text-bg-success">฿ <?php echo number_format($c['price']) ?></span></h3>
 							</div>
 							
 							<p class="card-text"><?php echo $c['brief_desc'] ?></p>

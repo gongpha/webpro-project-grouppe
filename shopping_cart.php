@@ -32,7 +32,7 @@ foreach ($courses as $c) {
 				<div class="card-body">
 				<div class="d-flex justify-content-between">
 					<h5 class="card-title"><?php echo $c['name'] ?></h5>
-					<h5><span class="badge text-bg-success">฿ <?php echo $c['price'] ?></span></h5>
+					<h5><span class="badge text-bg-success">฿ <?php echo number_format($c['price']) ?></span></h5>
 				</div>
 				<p class="card-text"><?php echo $c['brief_desc'] ?></p>
 				<p class="card-text">
@@ -54,7 +54,7 @@ foreach ($courses as $c) {
 			ราคารวม
 		</td>
 		<td class="text-end">
-			฿ <?php echo $shopping->get_total_price(); ?>
+			฿ <?php echo number_format($shopping->get_total_price()); ?>
 		</td>
 	</tr>
 	<tr>

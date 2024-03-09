@@ -42,7 +42,7 @@ exit();
 				<?php echo $c['name']; ?>
 			</td>
 			<td class="text-end">
-				฿ <?php echo $c['price']; ?>
+				฿ <?php echo number_format($c['price']); ?>
 			</td>
 		</tr>
 
@@ -53,7 +53,7 @@ exit();
 	<tr>
 		<th>ราคารวม</th>
 		<th></th>
-		<th class="text-end">฿ <?php echo $shopping->get_total_price(); ?></th>
+		<th class="text-end">฿ <?php echo number_format($shopping->get_total_price()); ?></th>
 	</tr>
 </table>
 
