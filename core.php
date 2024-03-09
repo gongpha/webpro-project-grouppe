@@ -189,7 +189,7 @@ require 'common.php';
 		}
 		///////////////////
 		function get_anonymous_category_list() {
-			$sql = "SELECT id, name FROM course_categories;";
+			$sql = "SELECT id, name FROM course_categories WHERE (SELECT COUNT(*) as count FROM courses WHERE category_id = course_categories.id)";
 			$ret = $this->query($sql);
 
 			$results = array();
@@ -330,7 +330,7 @@ require 'common.php';
 				$more_filter = " AND visibility = 1";
 			}
 
-			$sql = "SELECT name, cover_hash FROM courses WHERE id = (SELECT course_id FROM course_contents WHERE id = " . $row['course_id'] . $more_filter . ")";
+			$sql = "SELECT name, cover_hash FROM courses WHERE id = " . $row['course_id'] . $more_filter;
 			$ret = $this->query($sql);
 			$row2 = $ret->fetchArray(SQLITE3_ASSOC);
 
@@ -687,6 +687,143 @@ require 'common.php';
 				'cumulative_earning_specific' => json_encode($cumulative_earning_specific)
 			);
 
+		}
+		
+		function get_course_content_list() {
+			$sql = "SELECT id, title FROM course_contents WHERE course_id = " . $_GET['id'];
+			$ret = $this->query($sql);
+			$contents = array();
+			while ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+				$contents[] = $row;
+			}
+			return $contents;
+		}
+
+		function get_course_content_for_edit($id) {
+			$sql = "SELECT * FROM course_contents WHERE id = $id;";
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+
+			// yt
+			$sql = "SELECT url FROM content_attachments_youtube WHERE course_content = $id;";
+			$ret = $this->query($sql);
+			$attachments_yt = array();
+			while ($row2 = $ret->fetchArray(SQLITE3_ASSOC)) {
+				array_push($attachments_yt, "https://www.youtube.com/watch?v=" . $row2['url']);
+			}
+			$row['attachments_yt'] = $attachments_yt;
+
+			return $row;
+		}
+
+		function edit_course_content($post) {
+			// get data
+			$id = $post['id'];
+			$title = $post['title'];
+			$desc = $post['desc'];
+
+			// extract youtube id from youtub url
+			// by regex
+			$yturl = $post['yturl'];
+
+			preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $yturl, $match);
+			$youtube_id = $match[1];
+
+			// transaction
+			$this->exec('BEGIN');
+
+			// update
+			$sql = "UPDATE course_contents SET title = '$title', desc = '$desc' WHERE id = $id;";
+			$ret = $this->exec($sql);
+			if (!$ret) {
+				$this->exec('ROLLBACK');
+				return "ไม่สามารถแก้ไขเนื้อหาได้";
+			}
+
+			// update yt
+			$sql = "UPDATE content_attachments_youtube SET url = '$youtube_id' WHERE course_content = $id;";
+			$ret = $this->exec($sql);
+			if (!$ret) {
+				$this->exec('ROLLBACK');
+				return "ไม่สามารถแก้ไขเนื้อหาได้";
+			}
+
+			// commit
+			$this->exec('COMMIT');
+
+			return "";
+		}
+
+		function new_course_content($post) {
+			print_r($post);
+			
+			// get data
+			$course_id = $post['for'];
+			$title = $post['title'];
+			$desc = $post['desc'];
+
+			// extract youtube id from youtub url
+			// by regex
+			$yturl = $post['yturl'];
+
+			preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $yturl, $match);
+			$youtube_id = $match[1];
+
+			// transaction
+			$this->exec('BEGIN');
+
+			// insert
+			$sql = "INSERT INTO course_contents (course_id, title, desc, created_datetime) VALUES ($course_id, '$title', '$desc', CURRENT_TIMESTAMP);";
+			$ret = $this->exec($sql);
+			if (!$ret) {
+				$this->exec('ROLLBACK');
+				return "ไม่สามารถเพิ่มเนื้อหาได้";
+			}
+
+			// get course content id
+			$sql = "SELECT last_insert_rowid() as id;";
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			$content_id = $row['id'];
+
+			// insert yt
+			$sql = "INSERT INTO content_attachments_youtube (course_content, url) VALUES ($content_id, '$youtube_id');";
+			$ret = $this->exec($sql);
+			if (!$ret) {
+				$this->exec('ROLLBACK');
+				return "ไม่สามารถเพิ่มเนื้อหาได้";
+			}
+
+			// commit
+			$this->exec('COMMIT');
+
+			return "";
+		}
+
+		function delete_course_content($id) {
+			// transaction
+			$this->exec('BEGIN');
+
+			// delete yt
+			$sql = "DELETE FROM content_attachments_youtube WHERE course_content = $id;";
+			$ret = $this->exec($sql);
+			if (!$ret) {
+				$this->exec('ROLLBACK');
+				return "ไม่สามารถลบเนื้อหาได้";
+			}
+
+			// delete
+			$sql = "DELETE FROM course_contents WHERE id = $id;";
+			$ret = $this->exec($sql);
+			if (!$ret) {
+				$this->exec('ROLLBACK');
+				return "ไม่สามารถลบเนื้อหาได้";
+			}
+
+			// commit
+			$this->exec('COMMIT');
+
+			return "";
 		}
 
 		/////////////////////////////////////

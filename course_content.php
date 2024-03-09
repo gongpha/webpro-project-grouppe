@@ -56,12 +56,32 @@ $yt_ids = $content['attachments_yt'];
 	?>
 	</div>
 </div>
+
+<h1><?php echo $content['title'] ?></h1>
+
 <?php
 
 foreach ($yt_ids as $yt_id) {
 	echo '<iframe style="width:100%; height:100%; min-height: 640px;" src="https://www.youtube.com/embed/' . $yt_id . '" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
 }
 ?>
+
+<div class="card mt-3" style="margin-bottom: 30px;">
+	<div class="card-header">
+		คำอธิบาย
+	</div>
+	<div class="card-body">
+		<p class="card-text">
+			<?php echo $content['desc'] ?>
+		</p>
+	</div>
+</div>
+
+
+
+
+<!---------------------------------------------------->
+</div>
 
 <?php
 require 'template_container_end.php';

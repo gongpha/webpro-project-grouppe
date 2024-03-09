@@ -52,10 +52,11 @@ echo "</pre>";
 
 	<div class="d-flex gap-4">
 		<div class="list-group" style="min-width: 250px;">
-			<a href="course_edit.php?id=<?php echo isset($_GET['id']) ? $_GET['id'] : '0'; ?>" class="list-group-item list-group-item-action">ข้อมูลคอร์ส</a>
+			<a href="course_edit.php?id=<?php echo isset($_GET['id']) ? $_GET['id'] : '0'; ?>" class="list-group-item list-group-item-action"><i class="bi bi-info-circle-fill"></i> ข้อมูลคอร์ส</a>
 			<?php if ($id != 0) { ?>
-				<a href="course_statistics.php?id=<?php echo isset($_GET['id']) ? $_GET['id'] : '0'; ?>" class="list-group-item list-group-item-action active">สถิติ</a>
-				<a href="course_edit_content.php?id=<?php echo isset($_GET['id']) ? $_GET['id'] : '0'; ?>" class="list-group-item list-group-item-action ">แก้ไขเนื้อหา</a>
+				<a href="course_statistics.php?id=<?php echo isset($_GET['id']) ? $_GET['id'] : '0'; ?>" class="list-group-item list-group-item-action active"><i class="bi bi-bar-chart-line-fill"></i> สถิติ</a>
+				<a href="course_edit_contents.php?id=<?php echo isset($_GET['id']) ? $_GET['id'] : '0'; ?>" class="list-group-item list-group-item-action"><i class="bi bi-pencil-fill mt-auto mb-auto"></i> แก้ไขเนื้อหา</a>
+				<a href="course_detail.php?id=<?php echo isset($_GET['id']) ? $_GET['id'] : '0'; ?>" class="list-group-item list-group-item-action"><i class="bi bi-arrow-up-right-square"></i> ดูหน้าคอร์ส</a>
 			<?php } ?>
 		</div>
 

@@ -89,7 +89,7 @@ require 'template_header.php';
 				</div>
 				<button type="submit" name="submit" class="btn btn-primary">บันทึก</button>
 				<?php if ($allow_remove) { ?>
-					<button type="submit" name="deletes" class="btn btn-danger">ลบ</button>
+					<button type="submit" name="deletes" class="btn btn-outline-danger">ลบ</button>
 				<?php } ?>
 			</form>
 		</div>

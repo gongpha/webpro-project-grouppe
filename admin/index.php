@@ -94,7 +94,7 @@ $dashboard_data = $db->get_dashboard_data();
 		<div class="col">
 			<div class="card">
 				<div class="card-header">
-					รายได้รวม
+					รายได้ 30 วันล่าสุด
 				</div>
 				<div class="card-body">
 					<canvas id="cumulativeEarnings"></canvas>

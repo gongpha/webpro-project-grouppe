@@ -1,4 +1,4 @@
-	<footer class="py-5 text-center text-body-secondary bg-body-tertiary">
+	<footer class="py-5 text-center text-body-secondary bg-body-tertiary" style="margin-top: 30px;">
 	<div class="container">
 	<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
 	<p class="col-md-4 mb-0 text-body-secondary">Copyright 2024 Webpro Project Grouppe</p>
