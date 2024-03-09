@@ -14,6 +14,16 @@ require 'template_container_begin.php';
 
 $profile = $db->get_my_profile();
 
+$item_per_page = 20;
+
+if (isset($_GET['page'])) {
+	$page = $_GET['page'];
+} else {
+	$page = 1;
+}
+
+$begin = ($page - 1) * $item_per_page;
+
 ?>
 
 <style>
@@ -52,7 +62,7 @@ $profile = $db->get_my_profile();
         	    </div>
 				<div class="d-flex align-items-center text-white text-decoration-none">
 					<span class="ms-auto mt-auto">
-						<a href="profile_edit.php" class="btn btn-outline-primary">แก้ไขโปรไฟล์</a>
+						<a href="profile_edit.php" class="btn btn-outline-primary"><i class="bi bi-pencil-fill"></i> แก้ไขโปรไฟล์</a>
 					</span>
 				</div>
             </div>
@@ -77,16 +87,21 @@ $profile = $db->get_my_profile();
 	<?php
 		$i = 0;
 		if ($db->is_student())
-			$courses = $db->get_owned_course_list();
+			$courses = $db->get_owned_course_list($begin, $item_per_page);
 		else
-			$courses = $db->get_created_course_list();
+			$courses = $db->get_created_course_list($begin, $item_per_page);
+		$page_count = $courses['page_count'];
+		$courses = $courses['courses'];
 	?>
 	
 	<h3 class="result"><?php echo $db->is_student() ? "คอร์สของฉัน" : "คอร์สที่สร้าง" ?></h3><div class="col-md-3 text-end"></div>
 	<div class="row mb-3">
 		<?php
 			if (sizeof($courses) == 0) {
-				echo "<p>คุณยังไม่ได้เป็นเจ้าของคอร์สใด ๆ</p>";
+				if ($db->is_student())
+					echo "<p>คุณยังไม่ได้เป็นเจ้าของคอร์สใด ๆ</p>";
+				else
+					echo "<p>คุณยังไม่ได้สร้างคอร์สใด ๆ</p>";
 			} else 
 			foreach ($courses as $c) {
 				if ($i == 2) {
@@ -119,6 +134,27 @@ $profile = $db->get_my_profile();
 			}
 		?>
 	</div>
+	<nav aria-label="pagination">
+		<ul class="pagination">
+			<li class="page-item">
+				<a class="page-link" href="profile.php?page=1">
+				<span>&laquo;</span>
+				</a>
+			</li>
+			<?php for ($i = 1; $i <= $page_count; $i++){ ?>
+			<li class="page-item">
+				<a class="page-link" href="profile.php?page=<?php echo $i; ?>">
+					<?php echo $i; ?>
+				</a>
+			</li>
+			<?php } ?>
+			<li class="page-item">
+				<a class="page-link" href="profile.php?page=<?php echo $page_count;?>">
+				<span>&raquo;</span>
+				</a>
+			</li>
+		</ul>
+	</nav>
 </div>
 
 </ul>

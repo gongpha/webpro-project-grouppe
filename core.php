@@ -198,13 +198,19 @@ require 'common.php';
 			}
 			return $results;
 		}
-		function get_anonymous_course_list($category = 0) {
+		function get_anonymous_course_list($category, $begin, $item_per_page) {
 			
 			$filter = "";
 			if ($category != 0)
 				$filter = " AND category_id = $category";
 
-			$sql = "SELECT courses.id, courses.name, cover_hash, brief_desc, category_id, price, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id " . $filter . " WHERE visibility = 1;";
+			// total pages
+			$sql = "SELECT COUNT(*) as count FROM courses WHERE visibility = 1" . $filter;
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			$total_pages = ceil($row['count'] / $item_per_page);
+
+			$sql = "SELECT courses.id, courses.name, cover_hash, brief_desc, category_id, price, course_categories.name as \"category_name\" FROM courses JOIN course_categories ON category_id=course_categories.id " . $filter . " WHERE visibility = 1 LIMIT $begin, $item_per_page;";
 			if ($category != 0)
 				$sql = $sql . " WHERE category_id = '{$category}'";
 			$ret = $this->query($sql);
@@ -214,7 +220,10 @@ require 'common.php';
 				$row['cover_url'] = "avatars/" . $row['cover_hash'] . '.jpg';
 				array_push($results, $row);
 			}
-			return $results;
+			return array(
+				'page_count' => $total_pages,
+				'courses' => $results
+			);
 		}
 		////////////////////
 
@@ -366,9 +375,16 @@ require 'common.php';
 			
 		}
 
-		function get_owned_course_list() {
+		function get_owned_course_list($begin, $item_per_page) {
 			if ($this->is_logged_in()) {
-				$sql = "SELECT courses.id AS id, courses.name, cover_hash, brief_desc, category_id, course_categories.name as \"category_name\", visibility FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id IN (SELECT course_id FROM student_owned_courses WHERE student_id = " . $_SESSION['user']['id'] . ");";
+				// total pages
+				$sql = "SELECT COUNT(*) as count FROM courses WHERE id IN (SELECT course_id FROM student_owned_courses WHERE student_id = " . $_SESSION['user']['id'] . ");";
+				$ret = $this->query($sql);
+				$row = $ret->fetchArray(SQLITE3_ASSOC);
+				$total_pages = ceil($row['count'] / $item_per_page);
+
+
+				$sql = "SELECT courses.id AS id, courses.name, cover_hash, brief_desc, category_id, course_categories.name as \"category_name\", visibility FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id IN (SELECT course_id FROM student_owned_courses WHERE student_id = " . $_SESSION['user']['id'] . ") LIMIT $begin, $item_per_page;";
 				$ret = $this->query($sql);
 
 				$results = array();
@@ -376,15 +392,24 @@ require 'common.php';
 					$row['cover_url'] = "avatars/" . $row['cover_hash'] . '.jpg';
 					array_push($results, $row);
 				}
-				return $results;
+				return array(
+					'page_count' => $total_pages,
+					'courses' => $results
+				);
 			}
 			return array();
 		
 		}
 
-		function get_created_course_list() {
+		function get_created_course_list($begin, $item_per_page) {
 			if ($this->is_logged_in()) {
-				$sql = "SELECT courses.id AS id, courses.name, cover_hash, brief_desc, category_id, course_categories.name as \"category_name\", visibility FROM courses JOIN course_categories ON category_id=course_categories.id WHERE owner = " . $_SESSION['user']['id'] . ";";
+				// total pages
+				$sql = "SELECT COUNT(*) as count FROM courses WHERE owner = " . $_SESSION['user']['id'] . ";";
+				$ret = $this->query($sql);
+				$row = $ret->fetchArray(SQLITE3_ASSOC);
+				$total_pages = ceil($row['count'] / $item_per_page);
+				
+				$sql = "SELECT courses.id AS id, courses.name, cover_hash, brief_desc, category_id, course_categories.name as \"category_name\", visibility FROM courses JOIN course_categories ON category_id=course_categories.id WHERE owner = " . $_SESSION['user']['id'] . " LIMIT $begin, $item_per_page;";
 				$ret = $this->query($sql);
 
 				$results = array();
@@ -392,7 +417,10 @@ require 'common.php';
 					$row['cover_url'] = "avatars/" . $row['cover_hash'] . '.jpg';
 					array_push($results, $row);
 				}
-				return $results;
+				return array(
+					'page_count' => $total_pages,
+					'courses' => $results
+				);
 			}
 			return array();
 		}
@@ -848,20 +876,30 @@ require 'common.php';
 			return isset($_SESSION["admin"]);
 		}
 
-		function get_instructor_simple_list($begin, $search) {
-			return $this->get_simple_list('instructors', $begin, $search);
+		function get_instructor_simple_list($begin, $search, $item_per_page) {
+			return $this->get_simple_list('instructors', $begin, $search, $item_per_page);
 		}
 
-		function get_student_simple_list($begin, $search) {
-			return $this->get_simple_list('students', $begin, $search);
+		function get_student_simple_list($begin, $search, $item_per_page) {
+			return $this->get_simple_list('students', $begin, $search, $item_per_page);
 		}
 
-		function get_simple_list($table, $begin, $search) {
+		function get_simple_list($table, $begin, $search, $item_per_page) {
 			$filter = "";
 			if ($search != "") {
 				$filter = " WHERE username LIKE '%$search%' OR first_name LIKE '%$search%' OR last_name LIKE '%$search%'";
 			}
-			$sql = "SELECT profile_pic_hash, id, username, first_name || ' ' || last_name AS name FROM $table" . $filter;
+
+			// get count
+			$sql = "SELECT COUNT(*) as count FROM $table" . $filter;
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			$total = $row['count'];
+			
+			// pagination
+			$page_count = ceil($total / $item_per_page);
+
+			$sql = "SELECT profile_pic_hash, id, username, first_name || ' ' || last_name AS name FROM $table" . $filter . " LIMIT $item_per_page OFFSET $begin";
 			$ret = $this->query($sql);
 			$instructors = array();
 			while($row = $ret->fetchArray(SQLITE3_ASSOC)) {
@@ -869,15 +907,28 @@ require 'common.php';
 				$instructors[] = $row;
 			}
 
-			return $instructors;
+			return array(
+				'page_count' => $page_count,
+				'data' => $instructors
+			);
 		}
 
-		function get_course_simple_list($begin, $search) {
+		function get_course_simple_list($begin, $search, $item_per_page) {
 			$filter = "";
 			if ($search != "") {
 				$filter = " WHERE name LIKE '%$search%' OR brief_desc LIKE '%$search%' OR desc LIKE '%$search%'";
 			}
-			$sql = "SELECT courses.id, courses.name, created_datetime, first_name || ' ' || last_name AS owner_name, total_sales, course_categories.name AS category_name FROM courses JOIN instructors ON owner=instructors.id JOIN course_categories ON category_id=course_categories.id" . $filter;
+
+			// get count
+			$sql = "SELECT COUNT(*) as count FROM courses" . $filter;
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			$total = $row['count'];
+
+			// pagination
+			$page_count = ceil($total / $item_per_page);
+
+			$sql = "SELECT courses.id, courses.name, created_datetime, first_name || ' ' || last_name AS owner_name, total_sales, course_categories.name AS category_name FROM courses JOIN instructors ON owner=instructors.id JOIN course_categories ON category_id=course_categories.id" . $filter . " LIMIT $item_per_page OFFSET $begin";
 			$ret = $this->query($sql);
 			$instructors = array();
 			while($row = $ret->fetchArray(SQLITE3_ASSOC)) {
@@ -885,15 +936,28 @@ require 'common.php';
 				$instructors[] = $row;
 			}
 
-			return $instructors;
+			return array(
+				'page_count' => $page_count,
+				'data' => $instructors
+			);
 		}
 
-		function get_category_simple_list($begin, $search) {
+		function get_category_simple_list($begin, $search, $item_per_page) {
 			$filter = "";
 			if ($search != "") {
 				$filter = " WHERE name LIKE '%$search%'";
 			}
-			$sql = "SELECT id, name FROM course_categories" . $filter;
+
+			// get count
+			$sql = "SELECT COUNT(*) as count FROM course_categories" . $filter;
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			$total = $row['count'];
+
+			// pagination
+			$page_count = ceil($total / $item_per_page);
+
+			$sql = "SELECT id, name FROM course_categories" . $filter . " LIMIT $item_per_page OFFSET $begin";
 			$ret = $this->query($sql);
 			$instructors = array();
 			while($row = $ret->fetchArray(SQLITE3_ASSOC)) {
@@ -908,7 +972,10 @@ require 'common.php';
 				$instructors[$key]['total_courses'] = $row['count'];
 			}
 
-			return $instructors;
+			return array(
+				'page_count' => $page_count,
+				'data' => $instructors
+			);
 		}
 
 		function get_object($id, $table) {

@@ -60,7 +60,7 @@ require 'template_header.php';
 											<a href="signup.php" class="btn btn-outline-light me-2">ลงทะเบียน</a>
 										</div>
 									</div>
-									<p class="text-center text-white">
+									<p class="text-center text-white mt-4">
 										สำหรับผู้สอน กรุณาเข้าสู่ระบบ<a href="signin_instructor.php">ที่นี่</a>
 									</p>
 								</div>

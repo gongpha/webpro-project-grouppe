@@ -72,12 +72,12 @@
 									<img src="<?php echo $db->get_my_avatar() ?>" alt="my avatar" width="32" height="32" class="rounded-circle">
 								</a>
 								<ul class="dropdown-menu text-small" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate3d(0px, 36.6667px, 0px);" data-popper-placement="bottom-start">
-									<li><a class="dropdown-item" href="profile.php">โปรไฟล์ของฉัน</a></li>
+									<li><a class="dropdown-item" href="profile.php"><i class="bi bi-file-person-fill"></i> โปรไฟล์ของฉัน</a></li>
 									<?php if (!$db->is_student()) { ?>
-									<li><a class="dropdown-item" href="course_edit.php">เพิ่มคอร์สใหม่</a></li>
+									<li><a class="dropdown-item" href="course_edit.php"><i class="bi bi-journal-plus"></i> เพิ่มคอร์สใหม่</a></li>
 									<?php } ?>
 									<li><hr class="dropdown-divider"></li>
-									<li><a class="dropdown-item" href="signout.php">ลงชื่อออก</a></li>
+									<li><a class="dropdown-item" href="signout.php"><i class="bi bi-door-closed-fill"></i> ลงชื่อออก</a></li>
 								</ul>
 							</div>
 						</div>

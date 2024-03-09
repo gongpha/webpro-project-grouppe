@@ -1,3 +1,10 @@
+<?php
+
+$page_count = $list['page_count'];
+$list = $list['data'];
+
+?>
+
 <div class="container">
 <h1><?php echo $header; ?></h1>
 
@@ -53,6 +60,28 @@
 		?>
 	</tbody>
 	</table>
+
+	<nav aria-label="pagination">
+		<ul class="pagination">
+			<li class="page-item">
+				<a class="page-link" href="<?php echo $pagename; ?>?page=1">
+				<span>&laquo;</span>
+				</a>
+			</li>
+			<?php for ($i = 1; $i <= $page_count; $i++){ ?>
+			<li class="page-item">
+				<a class="page-link" href="<?php echo $pagename; ?>?page=<?php echo $i; ?>">
+					<?php echo $i; ?>
+				</a>
+			</li>
+			<?php } ?>
+			<li class="page-item">
+				<a class="page-link" href="<?php echo $pagename; ?>?page=<?php echo $page_count;?>">
+				<span>&raquo;</span>
+				</a>
+			</li>
+		</ul>
+	</nav>
 </div>
 
 <?php

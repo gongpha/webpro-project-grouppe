@@ -58,12 +58,18 @@ $yt_ids = $content['attachments_yt'];
 </div>
 
 <h1><?php echo $content['title'] ?></h1>
+<hr/>
 
 <?php
 
 foreach ($yt_ids as $yt_id) {
+	if ($yt_id == "") {
+		continue;
+	}
 	echo '<iframe style="width:100%; height:100%; min-height: 640px;" src="https://www.youtube.com/embed/' . $yt_id . '" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
 }
+
+if ($content['desc'] != "") {
 ?>
 
 <div class="card mt-3" style="margin-bottom: 30px;">
@@ -76,7 +82,9 @@ foreach ($yt_ids as $yt_id) {
 		</p>
 	</div>
 </div>
-
+<?php
+}
+?>
 
 
 
