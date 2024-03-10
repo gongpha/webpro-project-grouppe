@@ -75,7 +75,8 @@ if (!isset($_GET['id'])) {
 
 $attachments_yt_first = '';
 if (isset($content_data['attachments_yt'])) {
-	$attachments_yt_first = $content_data['attachments_yt'][0];
+	if (count($content_data['attachments_yt']) > 0)
+		$attachments_yt_first = $content_data['attachments_yt'][0];
 }
 
 
