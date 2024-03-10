@@ -7,14 +7,14 @@ require 'template_container_begin.php';
 <div class="card text-bg-dark" style="overflow: hidden; margin-bottom: 20px;">
 	<div class="card-body p-5" style="background-image: linear-gradient(#00000078, #00000078), url(assets/main_cover.jpg); background-size: cover;">
 		<div class="col-lg-6 px-0">
-			<h1 class="display-4 fst-italic">@@@ไปเรียน ไอควายกหฟทยกฟ</h1>
-			<p class="lead my-3">@@@พัฒนาประเทสชาต</p>
-			<p class="lead mb-0"><a href="#" class="text-body-emphasis fw-bold">Continue edging...</a></p>
+			<h1 class="display-4 fst-italic">เรียนรู้อย่างไร้ขีดจำกัด</h1>
+			<p class="lead my-3">ทักษะสำหรับปัจจุบันและอนาคต</p>
+			<p class="lead mb-0"><a href="#" class="text-body-emphasis fw-bold">มาเริ่มกันเลย ...</a></p>
 		</div>
 	</div>
 </div>
 
-<h1 class="text-center mt-5">@@@ เรียนกับเรา ได้เหี้ไรบ้างวะ</h1>
+<h1 class="text-center mt-5">เรียนกับเรานั้น นี้คือสิ่งที่คุณจะได้</h1>
 
 <div class="row g-4 py-5 row-cols-1 row-cols-lg-3 text-center">
 	<div class="feature col">
@@ -22,25 +22,25 @@ require 'template_container_begin.php';
 		<img src="assets/certificate.png" alt="certificate" width="140" height="140">
 	</div>
 	<h3 class="fs-2 text-body-emphasis">ได้รับใบ Certificate หลังเรียนจบ</h3>
-	<p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
-	</div>
+	<p>ก้าวหน้าไปสู่ปริญญาก่อนที่คุณจะลงทะเบียนด้วยซ้ำ</p>
+	</div>   
 	<div class="feature col">
 	<div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3 w-100">
 		<img src="assets/infinity.png" alt="certificate" width="140" height="140">
 	</div>
 	<h3 class="fs-2 text-body-emphasis">ไม่จำกัดครั้งที่เข้าเรียนและเวลาการดู</h3>
-	<p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
+	<p>เรียนได้ตลอดเวลา ศึกษาจนกว่าคุณจะเข้าใจแจ่มแจ้ง</p>
 	</div>
 	<div class="feature col">
 	<div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3 w-100">
 		<img src="assets/level-up.png" alt="certificate" width="140" height="140">
 	</div>
-	<h3 class="fs-2 text-body-emphasis">การันตีว่าเวลคุณต้องอัพ !</h3>
-	<p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
+	<h3 class="fs-2 text-body-emphasis">การันตี ! เวลความรู้คุณต้องอัพ</h3>
+	<p>เพิ่มระดับความรู้ให้คุณพร้อมที่ออกไปผจญโลก</p>
 	</div>
 </div>
 
-<h2 class="text-center mt-5">@@@ ดูดิ ว่าิอยากเรีนอะไ</h2>
+<h2 class="text-center mt-5">อยากเรียนอะไร?</h2>
 
 <form action="course_list.php" method="get" class="text-center">
 	<input type="submit" class="btn-check" name="category" value="0" id="0" autocomplete="off">

@@ -31,7 +31,7 @@
 			<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
 				<a href="index.php" style="" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
 					<img src="assets/logo.png" alt="logo" width="40" height="40">
-					<h3 class="mt-auto mb-auto ms-2 me-5">OnFuckingDemand</h3>
+					<h3 class="mt-auto mb-auto ms-2 me-5">onCourse</h3>
 				</a>
 				<ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
 					<li class="nav-item">
