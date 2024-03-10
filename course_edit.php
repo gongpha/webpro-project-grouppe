@@ -124,7 +124,7 @@ echo "</pre>";
 							<select class="form-select" name="category_id">
 								<option value="0" selected>(เลือกหมวดหมู่)</option>
 								<?php
-									$categories = $db->get_anonymous_category_list($category);
+									$categories = $db->get_category_list();
 									foreach ($categories as $c) {
 										?>
 										<option value="<?php echo $c['id'] ?>" <?php echo (isset($forminfo["category_id"]) && $forminfo["category_id"] == $c['id']) ? 'selected' : '' ?> ><?php echo $c['name'] ?></option>
