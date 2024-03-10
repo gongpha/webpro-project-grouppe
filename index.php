@@ -7,9 +7,8 @@ require 'template_container_begin.php';
 <div class="card text-bg-dark" style="overflow: hidden; margin-bottom: 20px;">
 	<div class="card-body p-5" style="background-image: linear-gradient(#00000078, #00000078), url(assets/main_cover.jpg); background-size: cover;">
 		<div class="col-lg-6 px-0">
-			<h1 class="display-4 fst-italic">เรียนรู้อย่างไร้ขีดจำกัด</h1>
+			<h1 class="display-4 fst-italic">เรียนรู้อย่างไร้ขีดจำกัด ไปให้ทันโลก</h1>
 			<p class="lead my-3">ทักษะสำหรับปัจจุบันและอนาคต</p>
-			<p class="lead mb-0"><a href="#" class="text-body-emphasis fw-bold">มาเริ่มกันเลย ...</a></p>
 		</div>
 	</div>
 </div>

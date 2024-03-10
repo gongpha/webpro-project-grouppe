@@ -21,7 +21,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@0.1.1"></script>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-	<title>project grouppe admin</title>
+	<title>Admin Panel</title>
 
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -1,7 +1,7 @@
 <?php
 	require 'core.php';
 
-	$OPTIONS = array();
+	$custom_title = "";
 	$db = new App('data.sqlite', "/avatars/");
 	?>
 	<?php

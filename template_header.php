@@ -11,7 +11,8 @@
 	<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@0.1.1"></script>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-	<title>project grouppe</title>
+	<title><?php echo $custom_title == "" ? "Binarian" : ($custom_title . " - Binarian"); ?></title>
+	<link rel="icon" href="assets/favicon.ico" type="image/ico">
 
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,7 +32,7 @@
 			<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
 				<a href="index.php" style="" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
 					<img src="assets/logo.png" alt="logo" width="40" height="40">
-					<h3 class="mt-auto mb-auto ms-2 me-5">onCourse</h3>
+					<h3 class="mt-auto mb-auto ms-2 me-5">Binarian</h3>
 				</a>
 				<ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
 					<li class="nav-item">
