@@ -56,21 +56,22 @@ if (isset($_POST['id'])) {
 
 			if (isset($_POST['role'])) {
 				$change_role_name = ", role";
-				$change_role = ", " . $_POST['role'];
+				$change_role = ", '" . $_POST['role'] . "'";
 			} else {
 				$change_role_name = "";
 				$change_role = "";
 			}
 
 			if (!$failed) {
-				$sql = "INSERT INTO $table (username, email, phone, password, first_name, last_name, profile_pic_hash" . $change_role_name . ") VALUES ('$username', '$email', '$phone', '" . password_hash($_POST['password'], PASSWORD_DEFAULT) . "', '$first_name', '$last_name', '$pfpname', " . $_POST['role'] . ")";
+				$sql = "INSERT INTO $table (username, email, phone, password, first_name, last_name, profile_pic_hash" . $change_role_name . ") VALUES ('$username', '$email', '$phone', '" . password_hash($_POST['password'], PASSWORD_DEFAULT) . "', '$first_name', '$last_name', '$pfpname' " . $change_role . ")";
+				echo $sql;
 				$ret = $db->exec($sql);
 				if(!$ret){
 					motd('danger', 'ไม่สามารถลงทะเบียนได้ โปรดลองใหม่อีกครั้ง');
 					$failed = true;
 				} else {
 					motd('success', 'เพิ่มข้อมูลเรียบร้อย');
-					$db->go_to('si_list.php');
+					$db->go_to("$table.php");
 				}
 			}
 		}
@@ -108,6 +109,7 @@ if (isset($_POST['id'])) {
 		'last_name' => $_POST['last_name'],
 		'email' => $_POST['email'],
 		'phone' => $_POST['phone'],
+		'role' => (isset($_POST['role']) ? $_POST['role'] : ''),
 		'pfplink' => ''
 	);
 } else {
@@ -118,6 +120,7 @@ if (isset($_POST['id'])) {
 		'last_name' => '',
 		'email' => '',
 		'phone' => '',
+		'role' => '',
 		'pfplink' => ''
 	);
 
