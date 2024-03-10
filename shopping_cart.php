@@ -1,5 +1,10 @@
 <?php
 require 'template_init.php';
+
+if (!$db->is_student()) {
+	$db->go_to_home();
+}
+
 require 'template_header.php';
 require 'template_container_begin.php';
 
