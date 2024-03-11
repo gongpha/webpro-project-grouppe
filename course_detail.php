@@ -1,6 +1,21 @@
 <?php
 require 'template_init.php';
 
+if (isset($_POST["rate"])) {
+	$rating = $_POST["rating"];
+	$course_id = $_POST["course_id"];
+	if ($rating < 1 || $rating > 5) {
+		// remove post
+		$db->go_to_with_motd("course_detail.php?id=" . $course_id, "danger", "คะแนนต้องอยู่ระหว่าง 1 ถึง 5");
+		exit();
+	}
+	$comment = $_POST["comment"];
+	$db->rate_course($course_id, $rating, $comment);
+
+	// refresh
+	$db->go_to_with_motd("course_detail.php?id=" . $course_id, "success", "รีวิวของคุณถูกบันทึกแล้ว");
+}
+
 if (isset($_GET["id"])) {
 	$course_id = $_GET["id"];
 } else {
@@ -61,8 +76,8 @@ require 'template_header.php';
 		</div>
 	</div>
 
-	<div class="d-flex flex-column flex-md-row p-4 gap-4 py-md-5 align-items-center justify-content-center">
-		<div class="list-group w-75">
+	<div class="p-4 gap-4 py-md-5 align-items-center justify-content-center">
+		<div class="list-group w-75 ms-auto me-auto">
 			<?php
 				// contents
 				$is_bought = $db->is_course_bought($course_id);
@@ -88,6 +103,136 @@ require 'template_header.php';
 				}
 			?>
 		</div>
+
+		<?php
+			//print_r($detail);
+			if (isset($detail['my_review'])) {
+				?>
+				<div class="card mt-3" style="margin-bottom: 30px;">
+					<div class="card-header">
+						รีวิวของฉัน
+					</div>
+					<div class="card-body">
+						<p class="card-text">
+							<?php $db->display_review($detail['my_review']) ?>
+						</p>
+					</div>
+				</div>
+			<?php
+			// show form
+			} else if (isset($detail['show_review_form'])) {
+				?>
+				<div class="card mt-3" style="margin-bottom: 30px;">
+					<div class="card-header">
+						เขียนรีวิว
+					</div>
+					<div class="card-body">
+						<form action="course_detail.php" method="post">
+							<input type="hidden" name="course_id" value="<?php echo $course_id; ?>">
+							<input type="hidden" name="rating" id="rating" value="0">
+
+							<div class="form-group mb-2">
+								<script>
+									function setRating(rating) {
+										if (rating == 1) {
+											document.getElementById("rate1").classList.add("btn-warning");
+											document.getElementById("rate2").classList.remove("btn-warning");
+											document.getElementById("rate3").classList.remove("btn-warning");
+											document.getElementById("rate4").classList.remove("btn-warning");
+											document.getElementById("rate5").classList.remove("btn-warning");
+											document.getElementById("rating").value = 1;
+										} else if (rating == 2) {
+											document.getElementById("rate1").classList.add("btn-warning");
+											document.getElementById("rate2").classList.add("btn-warning");
+											document.getElementById("rate3").classList.remove("btn-warning");
+											document.getElementById("rate4").classList.remove("btn-warning");
+											document.getElementById("rate5").classList.remove("btn-warning");
+											document.getElementById("rating").value = 2;
+										} else if (rating == 3) {
+											document.getElementById("rate1").classList.add("btn-warning");
+											document.getElementById("rate2").classList.add("btn-warning");
+											document.getElementById("rate3").classList.add("btn-warning");
+											document.getElementById("rate4").classList.remove("btn-warning");
+											document.getElementById("rate5").classList.remove("btn-warning");
+											document.getElementById("rating").value = 3;
+										} else if (rating == 4) {
+											document.getElementById("rate1").classList.add("btn-warning");
+											document.getElementById("rate2").classList.add("btn-warning");
+											document.getElementById("rate3").classList.add("btn-warning");
+											document.getElementById("rate4").classList.add("btn-warning");
+											document.getElementById("rate5").classList.remove("btn-warning");
+											document.getElementById("rating").value = 4;
+										} else if (rating == 5) {
+											document.getElementById("rate1").classList.add("btn-warning");
+											document.getElementById("rate2").classList.add("btn-warning");
+											document.getElementById("rate3").classList.add("btn-warning");
+											document.getElementById("rate4").classList.add("btn-warning");
+											document.getElementById("rate5").classList.add("btn-warning");
+											document.getElementById("rating").value = 5;
+										}
+									}
+								</script>
+								<button onclick="setRating(1)" id="rate1" type="button" class="btn btn-sm">
+									<i class="bi bi-star-fill"></i>
+								</button>
+								<button onclick="setRating(2)" id="rate2" type="button" class="btn btn-sm">
+									<i class="bi bi-star-fill"></i>
+								</button>
+								<button onclick="setRating(3)" id="rate3" type="button" class="btn btn-sm">
+									<i class="bi bi-star-fill"></i>
+								</button>
+								<button onclick="setRating(4)" id="rate4" type="button" class="btn btn-sm">
+									<i class="bi bi-star-fill"></i>
+								</button>
+								<button onclick="setRating(5)" id="rate5" type="button" class="btn btn-sm">
+									<i class="bi bi-star-fill"></i>
+								</button>
+							</div>
+
+							<div class="form-group mb-2">
+								<label for="comment">ความคิดเห็น</label>
+								<textarea class="form-control" id="comment" name="comment" rows="3"></textarea>
+							</div>
+							<button type="submit" name="rate" class="btn btn-primary">ส่ง</button>
+						</form>
+					</div>
+				</div>
+			<?php
+			}
+		?>
+
+		<div class="container mt-3">
+				<div class="row">
+					<?php if ($detail['avg_rating'] != 0) { ?>
+						<div class="col-sm-3">
+							<div class="card">
+								<div class="card-body">
+									<h4>คะแนนเฉลี่ย</h4>
+									<h2 class="bold padding-bottom-7"><?php echo number_format($detail['avg_rating'], 1) ?> <small>/ 5</small></h2>
+									<?php echo display_stars($detail['avg_rating']); ?>
+								</div>
+							</div>
+						</div>
+					<?php } ?>
+					<div class="col">
+					<?php
+						// reviews
+						if (sizeof($detail['reviews']) == 0) {
+							?>
+							<h4>ยังไม่มีรีวิว</h4>
+							<?php
+						}
+						foreach ($detail['reviews'] as $r) {
+							$db->display_review($r);
+							echo "<hr/>";
+						}
+					?>
+					</div>			
+				</div>			
+				
+				
+			</div>
+
 	</div>
 </div>
 <?php

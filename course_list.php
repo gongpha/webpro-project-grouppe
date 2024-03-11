@@ -71,6 +71,7 @@ $begin = ($page - 1) * $item_per_page;
 							</div>
 							
 							<p class="card-text"><?php echo $c['brief_desc'] ?></p>
+							<p class="card-text"><?php echo display_stars($c['avg_rating']) ?></p>
 							<p class="card-text">
 							<?php $db->generate_category_badge($c['category_id'], $c['category_name']); ?>
 							</p>

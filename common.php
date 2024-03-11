@@ -61,4 +61,36 @@ function load_chart($chart_id, $data, $use_baht = false) {
 	<?php
 }
 
+function display_stars($rating) {
+	// display star fill, star half, and star
+	// for float show half
+	// for int show fill
+	// for 5 - int show empty
+
+	if ($rating == 0) {
+		return '<i>ยังไม่มีคะแนน</i>';
+	}
+
+	$rating = floatval($rating);
+	$int_rating = intval($rating);
+	$half_rating = $rating - $int_rating;
+
+	$html = "";
+
+	for ($i = 0; $i < $int_rating; $i++) {
+		$html .= '<i class="bi bi-star-fill"></i>';
+	}
+
+	if ($half_rating >= 0.5) {
+		$html .= '<i class="bi bi-star-half"></i>';
+		$rating += 0.5;
+	}
+
+	for ($i = 0; $i < 5 - floor($rating); $i++) {
+		$html .= '<i class="bi bi-star"></i>';
+	}
+
+	return $html;
+}
+
 ?>

@@ -97,11 +97,11 @@ require 'common.php';
 		}
 
 		function get_profile($id) {
-			if ($_SESSION['user']['table'] == "students") {
-				$sql = "SELECT *, first_name || ' ' || last_name AS name FROM students WHERE id = " . $id;
-			} else if ($_SESSION['user']['table'] == "instructors") {
-				$sql = "SELECT *, first_name || ' ' || last_name AS name FROM instructors WHERE id = " . $id;
-			}
+			return get_profile_c($id, $_SESSION['user']['table']);
+		}
+
+		function get_profile_c($id, $table) {
+			$sql = "SELECT *, first_name || ' ' || last_name AS name FROM $table WHERE id = " . $id;
 			$ret = $this->query($sql);
 			$row = $ret->fetchArray(SQLITE3_ASSOC);
 			$row = prepare_other_data($row);
@@ -240,6 +240,15 @@ require 'common.php';
 				$row['cover_url'] = "avatars/" . $row['cover_hash'] . '.jpg';
 				array_push($results, $row);
 			}
+
+			// get course review score
+			foreach ($results as $key => $value) {
+				$sql = "SELECT AVG(rating) as avg FROM course_reviews WHERE course_id = " . $value['id'];
+				$ret = $this->query($sql);
+				$row = $ret->fetchArray(SQLITE3_ASSOC);
+				$results[$key]['avg_rating'] = $row['avg'];
+			}
+
 			return array(
 				'page_count' => $total_pages,
 				'courses' => $results
@@ -290,7 +299,88 @@ require 'common.php';
 
 			$row['contents'] = $contents;
 
+			// if student, query review
+			$exclude = "";
+
+			if ($this->is_logged_in()) {
+				if ($this->is_student()) {
+					if ($this->is_course_bought($id)) {
+						$sql = "SELECT rating, comment, created_datetime, student_id FROM course_reviews WHERE course_id = $id AND student_id = " . $_SESSION['user']['id'];
+						$ret = $this->query($sql);
+						$row2 = $ret->fetchArray(SQLITE3_ASSOC);
+						if ($row2) {
+							// show my review
+							$row['my_review'] = $row2;
+							$exclude = " AND student_id != " . $_SESSION['user']['id'];
+						} else {
+							// show review form
+							$row['show_review_form'] = true;
+						}
+					}
+				}
+			}
+
+			// review
+			$sql = "SELECT rating, comment, created_datetime, student_id FROM course_reviews WHERE course_id = $id $exclude;";
+			$ret = $this->query($sql);
+			$reviews = array();
+			while ($row2 = $ret->fetchArray(SQLITE3_ASSOC)) {
+				array_push($reviews, $row2);
+			}
+			$row['reviews'] = $reviews;
+
+			// average rating
+			$sql = "SELECT AVG(rating) as avg FROM course_reviews WHERE course_id = $id;";
+			$ret = $this->query($sql);
+			$row2 = $ret->fetchArray(SQLITE3_ASSOC);
+			$row['avg_rating'] = $row2['avg'];
+
 			return $row;
+		}
+
+		function rate_course($course_id, $rating, $comment) {
+			$sql = "SELECT id FROM course_reviews WHERE course_id = $course_id AND student_id = " . $_SESSION['user']['id'];
+			$ret = $this->query($sql);
+			$row = $ret->fetchArray(SQLITE3_ASSOC);
+			if ($row) {
+				// update
+				$sql = "UPDATE course_reviews SET rating = $rating, comment = '$comment', created_datetime = CURRENT_TIMESTAMP WHERE course_id = $course_id AND student_id = " . $_SESSION['user']['id'];
+			} else {
+				// insert
+				$sql = "INSERT INTO course_reviews (course_id, student_id, rating, comment, created_datetime) VALUES ($course_id, " . $_SESSION['user']['id'] . ", $rating, '$comment', CURRENT_TIMESTAMP)";
+			}
+			$ret = $this->exec($sql);
+		}
+
+		function display_review($data) {
+			$rating = display_stars($data['rating']);
+			$comment = $data['comment'];
+			$ava = $this->get_student_avatar($data['student_id']);
+
+			$name = $this->get_profile_c($data['student_id'], 'students')['name'];
+
+			$date = date('d/m/Y H:i', strtotime($data['created_datetime']));
+
+			$html = <<<HTM
+<div class="review-block">
+<div class="row">
+<div class="col-sm-3">
+<img src="$ava" class="rounded-circle" width="128">
+<div class="review-block-name">$name</div>
+<div class="review-block-date">$date<br/></div>
+</div>
+<div class="col-sm-9">
+<div class="review-block-rate"><h3>
+$rating
+</h3>
+</div>
+<div class="review-block-description">$comment</div>
+</div>
+</div>
+</div>
+HTM;
+			echo $html;
+
 		}
 
 		function get_avatar($table, $id) {
@@ -306,6 +396,10 @@ require 'common.php';
 				return $this->get_avatar($_SESSION['user']['table'], $_SESSION['user']['id']);
 			}
 			return '';
+		}
+
+		function get_student_avatar($id) {
+			return $this->get_avatar('students', $id);
 		}
 
 		function is_course_bought($course_id) {
