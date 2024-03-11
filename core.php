@@ -483,7 +483,7 @@ require 'common.php';
 			$filename = $file['name'];
 			$tmpname = $file['tmp_name'];
 			
-			resize_image($tmpname, 128, 128, true);
+			resize_image($tmpname, 128, 128);
 
 			$ext = pathinfo($filename, PATHINFO_EXTENSION);
 			$newname = md5_file($tmpname);
@@ -511,7 +511,7 @@ require 'common.php';
 			$filename = $file['name'];
 			$tmpname = $file['tmp_name'];
 			
-			resize_image($tmpname, 600, 400, true);
+			resize_image($tmpname, 600, 400);
 
 			$ext = pathinfo($filename, PATHINFO_EXTENSION);
 			$newname = md5_file($tmpname);
@@ -530,7 +530,7 @@ require 'common.php';
 					$role = ", role";
 				else
 					$role = "";
-				$sql = "SELECT id, first_name || ' ' || last_name AS name, profile_pic_hash " . $role . ", created_date FROM " . $_SESSION['user']['table'] . " WHERE id = " . $_SESSION['user']['id'];
+				$sql = "SELECT id, username, first_name || ' ' || last_name AS name, profile_pic_hash " . $role . ", created_date FROM " . $_SESSION['user']['table'] . " WHERE id = " . $_SESSION['user']['id'];
 				$ret = $this->query($sql);
 				$row = $ret->fetchArray(SQLITE3_ASSOC);
 				$row = prepare_other_data($row);
