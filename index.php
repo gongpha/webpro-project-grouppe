@@ -22,7 +22,7 @@ require 'template_container_begin.php';
 	</div>
 	<h3 class="fs-2 text-body-emphasis">ได้รับใบ Certificate หลังเรียนจบ</h3>
 	<p>ก้าวหน้าไปสู่ปริญญาก่อนที่คุณจะลงทะเบียนด้วยซ้ำ</p>
-	</div>   
+	</div>
 	<div class="feature col">
 	<div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3 w-100">
 		<img src="assets/infinity.png" alt="certificate" width="140" height="140">

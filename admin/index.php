@@ -21,7 +21,7 @@ $dashboard_data = $db->get_dashboard_data();
 							<div class="text-lg fw-bold"><?php echo $dashboard_data['student_count'] ?></div>
 						</div>
 						<i class="bi bi-person-fill"></i>
-					</div>
+					</div> 
 				</div>
 			</div>
 		</div>

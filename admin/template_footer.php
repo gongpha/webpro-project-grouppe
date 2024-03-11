@@ -12,8 +12,7 @@
 		<svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
 	</a>
 
-	<p class="col-md-4 mb-0 text-body-secondary">ติดต่อเรา
-	@@@your mom home</p>
+	<p class="col-md-4 mb-0 text-body-secondary">ติดต่อเรา 0-2329-8106</p>
 	</footer>
 </body>
 </html>
