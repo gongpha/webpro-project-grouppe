@@ -97,7 +97,7 @@ require 'common.php';
 		}
 
 		function get_profile($id) {
-			return get_profile_c($id, $_SESSION['user']['table']);
+			return $this->get_profile_c($id, $_SESSION['user']['table']);
 		}
 
 		function get_profile_c($id, $table) {
