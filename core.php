@@ -498,7 +498,7 @@ HTM;
 				$total_pages = ceil($row['count'] / $item_per_page);
 
 
-				$sql = "SELECT courses.id AS id, courses.name, cover_hash, brief_desc, category_id, course_categories.name as \"category_name\", visibility FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id IN (SELECT course_id FROM student_owned_courses WHERE student_id = " . $_SESSION['user']['id'] . ") LIMIT $begin, $item_per_page;";
+				$sql = "SELECT courses.id AS id, courses.name, cover_hash, brief_desc, category_id, course_categories.name as \"category_name\", visibility FROM courses JOIN course_categories ON category_id=course_categories.id WHERE courses.id IN (SELECT course_id FROM student_owned_courses WHERE student_id = " . $_SESSION['user']['id'] . ") AND visibility = 1 LIMIT $begin, $item_per_page;";
 				$ret = $this->query($sql);
 
 				$results = array();
